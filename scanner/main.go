@@ -14,8 +14,9 @@ func PickModule() string{
 	for{
 		fmt.Print("Pick scanning module: ")
 		fmt.Print("[1] Systemd Services Scan")
-		fmt.Print("[2] Cron Timers Scan")
+		fmt.Print("[2] Cron Scan")
 		fmt.Print("[3] Motd Files Scan")
+		fmt.Print("[4] PAM Modules Scan")
 		fmt.Print("[0] Exit")
 		
 		var moduleNumber int
@@ -27,6 +28,8 @@ func PickModule() string{
 			return "cron"
 		case 3:
 			return "motd"
+		case 4:
+			return "pam"
 		case 0:
 			fmt.Println("[+] Exiting...")
 			os.Exit(0)
@@ -57,7 +60,8 @@ func main(){
 	modulesRegistry := map[string]core.Analyzer{
 		"services": &services.Analyzer{Rules: fetchedRules},
 		"cron": &cron.Analyzer{Rules: fetchedRules},
-		"motd": &motd.Analyzer{Rules: fetchedRules}
+		"motd": &motd.Analyzer{Rules: fetchedRules},
+		"pam": &pam.Analyzer{Rules: fetchedRules},
 	}
 	analyzer := modulesRegistry[selectedModule]
 

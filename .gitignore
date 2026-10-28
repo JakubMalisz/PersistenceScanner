@@ -27,5 +27,3 @@ coverage.html
 Thumbs.db
 
 
-# ignored for now
-modules/pam/

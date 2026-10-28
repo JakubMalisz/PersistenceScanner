@@ -3,6 +3,7 @@ import (
 
 	"strings"
 	"PersistenceScanner/internal/core"
+	"reflect"
 )
 
 type Analyzer struct {
@@ -16,6 +17,12 @@ func (a *Analyzer) GetPaths() []string{
 		"/etc/cron.d",
 		"/var/spool/cron",          
 		"/var/spool/cron/crontabs",
+
+		//Script paths
+		"/etc/cron.hourly",
+		"/etc/cron.daily",
+		"/etc/cron.weekly",
+		"/etc/cron.monthly",
 	} 
 }
 
@@ -37,49 +44,67 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 
 	var allAlerts []core.Alert
 
-	for _, rule := range a.Rules{
+	if reflect.TypeOf(specs) == CronSpecs{
+		for _, rule := range a.Rules{
+			
+			for _, value := range specs.Variables{
+				if strings.Contains(value, rule.Pattern){
+					variableAlert := core.Alert{
+						FilePath: file.Path,
+						Pattern: rule.Pattern,
+						Description: rule.Description,
+						Severity: rule.Severity,
+						ExtraInfo: "Schedules: " + schedules + "| Users: " + targetUsers,
+					}
+					allAlerts = append(fileAlerts, variableAlert)
+				}
+			}
 		
-		for _, value := range specs.Variables{
-			if strings.Contains(value, rule.Pattern){
-				variableAlert := core.Alert{
-					FilePath: file.Path,
-					Pattern: rule.Pattern,
-					Description: rule.Description,
-					Severity: rule.Severity,
-					ExtraInfo: "Schedules: " + schedules + "| Users: " + targetUsers,
+			for _, command := range specs.Commands{
+				if strings.Contains(command, rule.Pattern){
+					commandAlert := core.Alert{
+						FilePath: file.Path,
+						Pattern: rule.Pattern,
+						Description: rule.Description,
+						Severity: rule.Severity,
+						ExtraInfo: "Schedules: " + schedules + "| Users: " + targetUsers,
+					}
+					allAlerts = append(fileAlerts, commandAlert)
 				}
-				allAlerts = append(fileAlerts, variableAlert)
 			}
-		}
-	
-		for _, command := range specs.Commands{
-			if strings.Contains(command, rule.Pattern){
-				commandAlert := core.Alert{
-					FilePath: file.Path,
-					Pattern: rule.Pattern,
-					Description: rule.Description,
-					Severity: rule.Severity,
-					ExtraInfo: "Schedules: " + schedules + "| Users: " + targetUsers,
-				}
-				allAlerts = append(fileAlerts, commandAlert)
-			}
-		}
 
-		for _, schedule := range specs.Schedules {
-			if strings.Contains(schedule, rule.Pattern) {
-				scheduleAlert := core.Alert{
-					FilePath:    file.Path,
-					Pattern:     rule.Pattern,
-					Description: rule.Description,
-					Severity:    rule.Severity,
-					ExtraInfo:   "Users: " + targetUsers,
+			for _, schedule := range specs.Schedules {
+				if strings.Contains(schedule, rule.Pattern) {
+					scheduleAlert := core.Alert{
+						FilePath:    file.Path,
+						Pattern:     rule.Pattern,
+						Description: rule.Description,
+						Severity:    rule.Severity,
+						ExtraInfo:   "Users: " + targetUsers,
+					}
+					allAlerts = append(allAlerts, scheduleAlert)
 				}
-				allAlerts = append(allAlerts, scheduleAlert)
+			}
+			
+		}
+	}
+	if reflect.TypeOf(specs) == CronScriptSpecs{
+		for _, rule := range Rules{
+			for _, command := range specs.Commands{
+				if strings.Contains(specs.Commands, rule.Pattern){
+					commandAlert := core.Alert{
+						FilePath: file.Path
+						Pattern: rule.Pattern
+						Description: rule.Description
+						Severity: rule.Severity
+						
+					}
+				allAlerts  = append(fileAlerts, commandAlert)	
+				}
 			}
 		}
-		
 	}
-	
+
 	return allAlerts, nil
 }
 
