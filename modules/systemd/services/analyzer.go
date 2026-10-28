@@ -1,0 +1,86 @@
+package services
+
+import (
+
+	"strings"
+	"PersistenceScanner/internal/core"
+)
+
+type Analyzer struct {
+	Rules []core.DetectionRule
+}
+
+func (a *Analyzer) GetPaths() []string{
+	return []string{
+		"/etc/systemd/system",
+		"/lib/systemd/system",
+		"/usr/lib/systemd/system",
+		"/run/systemd/system",
+	} 
+}
+
+func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
+
+
+
+// Wyciaganie danych z pol struktury ServiceSpecs
+	getFieldValues := func(specs ServiceSpecs, fieldName string) []string{
+		switch fieldName {
+		case "ExecStart":
+			return specs.ExecStart
+		case "ExecStartPre":
+			return specs.ExecStartPre
+		case "ExecStartPost":
+			return specs.ExecStartPost
+		case "EnvFiles":
+			return specs.EnvFiles
+		default:
+			return nil
+		}
+	}
+
+	
+// Funkcja porownujaca zawartosc pliku z baza zasad detekcji
+	buildAlert := func(specs ServiceSpecs, fieldName string) ([]core.Alert, error){
+		var fileAlerts []core.Alert
+		for _, rule := range Rules{
+
+				commands := getFieldValues(specs, fieldName)
+
+				for _, command := range commands{
+					if strings.Contains(command, rule.Pattern){
+
+						commandAlert := core.Alert{
+							FilePath:    file.Path, 
+							Pattern:     rule.Pattern,
+							Description: rule.Description,
+							Severity:    rule.Severity,
+						}	
+						fileAlerts = append(fileAlerts, commandAlert)	
+					}
+				}
+			}
+
+		return fileAlerts, nil		
+		}
+			
+	
+// Analiza plikow
+	var allAlerts []core.Alert
+
+	specs, err := Content(file.Path)
+	if err != nil{
+		return nil, err
+	}
+
+	fieldsToCheck := []string{"ExecStart", "ExecStartPre", "ExecStartPost", "EnvFiles"}
+	for _, field := range fieldsToCheck{
+		fieldAlerts, err := buildAlert(*specs, field)
+		if err != nil{
+			return nil, err
+		}
+		allAlerts = append(allAlerts, fieldAlerts...)
+	}
+
+	return allAlerts, nil
+}

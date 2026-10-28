@@ -1,0 +1,167 @@
+[
+  {
+    "indicator": "@reboot",
+    "description": "Non-standard schedule directive: Executes payload automatically on system startup",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "nc -e",
+    "description": "Reverse shell attempt using netcat with execution flag",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "ncat --exec",
+    "description": "Reverse shell attempt using Ncat with execution flag",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "bash -i",
+    "description": "Interactive Bash shell initiation (potential reverse shell)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "/dev/tcp/",
+    "description": "Direct use of Bash pseudo-device for outbound TCP connection (Reverse shell)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "/dev/udp/",
+    "description": "Direct use of Bash pseudo-device for outbound UDP connection (Reverse shell)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "python -c 'import socket",
+    "description": "Python network socket creation attempt (Reverse shell pattern)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "python3 -c 'import socket",
+    "description": "Python 3 network socket creation attempt (Reverse shell pattern)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "perl -e 'use Socket",
+    "description": "Perl socket creation attempt (Reverse shell pattern)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "php -r '$sock=fsockopen",
+    "description": "PHP socket connection attempt (Reverse shell pattern)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "ruby -rsocket -e",
+    "description": "Ruby socket connection attempt (Reverse shell pattern)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "lua -e 'require(\"socket\")",
+    "description": "Lua socket connection attempt (Reverse shell pattern)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "socat exec:",
+    "description": "Socat execution relay attempt (Reverse shell or port forwarding)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "curl -s",
+    "description": "Silent HTTP request via curl (Potential fileless payload download)",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "wget -qO-",
+    "description": "Quiet payload retrieval piped to standard output",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "| sh",
+    "description": "Piping raw remote stream directly into standard shell execution",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "| bash",
+    "description": "Piping raw remote stream directly into Bash shell execution",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "| python",
+    "description": "Piping raw remote stream directly into Python interpreter",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "base64 -d",
+    "description": "Base64 decoding invocation (Command obfuscation attempt)",
+    "severity": "MEDIUM"
+  },
+  {
+    "indicator": "xxd -r",
+    "description": "Hex dump reverse transformation (Binary recreation attempt)",
+    "severity": "MEDIUM"
+  },
+  {
+    "indicator": "/dev/shm",
+    "description": "Execution from shared memory space (RAM disk evasion technique)",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "/tmp/.",
+    "description": "Execution of hidden binary from /tmp directory",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "/var/tmp/.",
+    "description": "Execution of hidden binary from /var/tmp directory",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "/dev/mqueue",
+    "description": "Execution from POSIX message queue directory",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "LD_PRELOAD",
+    "description": "Shared library preloading injection (Userland rootkit technique)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "LD_LIBRARY_PATH",
+    "description": "Custom shared library path override attempt",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "chattr +i",
+    "description": "Immutable attribute set on file (Anti-removal/defense evasion)",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "chattr +a",
+    "description": "Append-only attribute set on file (Tamper resistance)",
+    "severity": "MEDIUM"
+  },
+  {
+    "indicator": "history -c",
+    "description": "Command history clearance attempt (Anti-forensics)",
+    "severity": "MEDIUM"
+  },
+  {
+    "indicator": "unset HISTFILE",
+    "description": "Disabling shell command logging (Anti-forensics)",
+    "severity": "MEDIUM"
+  },
+  {
+    "indicator": "xmrig",
+    "description": "Reference to XMRig cryptocurrency mining binary",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "stratum+tcp://",
+    "description": "Cryptocurrency mining pool connection protocol detected",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "nohup",
+    "description": "Process detachment from terminal session (Background persistence execution)",
+    "severity": "LOW"
+  }
+]
