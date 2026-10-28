@@ -2,14 +2,14 @@
 
 ## Indicator of Compromise (IoC) Ruleset for PersistenceScanner
 
-- Purpose: An external, dynamically loaded JSON rule base, injected directly into analytical modules (systemd, cron) via a network request. It allows updating threat signatures without the need to recompile the Go source code.
+- Purpose: An external, dynamically loaded JSON rule base, injected directly into analytical modules via a network request. It allows updating threat signatures without the need to recompile the Go source code.
 
 - Detection Scope: 
 
 ## Acknowledgments & Sources (Pattern Authors): 
 The database was generated and optimized based on public infosec community research and recognized open-source projects. Malicious behavior signatures draw directly from:
 
-- MITRE ATT&CK® Framework – tactic categorization (T1053, T1574, T1059).
+- MITRE ATT&CK® Framework – tactic categorization.
 
 - GTFOBins (Emilio Pinna, Andrea Cardaci, and the community) – patterns for abusing native Unix/Linux binaries.
 
