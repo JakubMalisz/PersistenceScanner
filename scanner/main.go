@@ -48,7 +48,7 @@ func main(){
 	
 
 	fmt.Println("[*] Fetching detection rules...")
-	rulesURL := "" 
+	rulesURL := "https://raw.githubusercontent.com/JakubMalisz/PersistenceScanner/rules.json" 
 	fetchedRules, err := feed.FetchRules(rulesURL)
 	if err != nil {
 		fmt.Printf("[-] Fetching error: %v\n", err)
