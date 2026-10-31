@@ -15,10 +15,10 @@ type CronSpecs struct {
 }
 
 type CronScriptSpecs struct{
-	Commands: []string `json:"commands,omitempty"`
+	Commands []string `json:"commands,omitempty"`
 }
 
-func Content(path string) (*CronSpecs, error){
+func Content(path string) (any, error){
 	file, err := os.Open(path)
 	if err != nil{
 		return nil, err
@@ -27,9 +27,8 @@ func Content(path string) (*CronSpecs, error){
 
 	scanner := bufio.NewScanner(file)
 
-	isSystemCrontab = path == "/etc/crontab" || strings.Contains(path, "/etc/cron.d")
-	isTab = path == "/etc/crontab" || "/etc/cron.d" || "/var/spool/cron" || "/var/spool/cron/crontabs"
-
+	isSystemCrontab := path == "/etc/crontab" || strings.Contains(path, "/etc/cron.d")
+	isTab := path == "/etc/crontab" || strings.HasPrefix(path, "/etc/cron.d") || strings.HasPrefix(path, "/var/spool/cron")
 
 	// crontab and cron.d
 	if isTab{
@@ -82,7 +81,7 @@ func Content(path string) (*CronSpecs, error){
 
 		for scanner.Scan(){
 			line := strings.TrimSpace(scanner.Text())
-			if !len(line) == 0 && !strings.HasPrefix(line, "#"){
+			if len(line) != 0 && !strings.HasPrefix(line, "#"){
 				specs.Commands = append(specs.Commands, line)
 			}
 			else{

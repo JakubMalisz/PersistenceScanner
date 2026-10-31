@@ -8,10 +8,10 @@ import (
 )
 
 type PamSpecs struct{
-	Type: string `json:"type,omitempty"`
-	Control: string `json:"control,omitempty"`
-	Module: string `json:"module,omitempty"`
-	Args: string `json:"args,omitempty"`
+	Type string `json:"type,omitempty"`
+	Control string `json:"control,omitempty"`
+	Module string `json:"module,omitempty"`
+	Args string `json:"args,omitempty"`
 }
 
 func Content(path string) ([]PamSpecs, error){
@@ -19,7 +19,7 @@ func Content(path string) ([]PamSpecs, error){
 	if err != nil{
 		return nil, err
 	}
-	defer Close(file)
+	defer file.Close()
 
 	var entries []PamSpecs
 	scanner := bufio.NewScanner(file)
@@ -31,6 +31,10 @@ func Content(path string) ([]PamSpecs, error){
 		}
 		
 		parts := strings.Fields(line)
+		if len(parts) < 3 { 
+			continue 
+		}
+		
 		specs := PamSpecs{
 			Type: parts[0],
 			Control: parts[1],
@@ -45,5 +49,5 @@ func Content(path string) ([]PamSpecs, error){
 	if err := scanner.Err(); err != nil{
 		return nil, err
 	}
-	return specs, nil
+	return entries, nil
 }

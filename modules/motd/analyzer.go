@@ -17,23 +17,23 @@ func (a *Analyzer) GetPaths() []string{
 
 func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 
-	specs, err := Content(file)
+	specs, err := Content(file.Path)
 	if err != nil{
 		return nil, err
 	}
 	var allAlerts []core.Alert
-	for _, rule := range Rules{
+	for _, rule := range a.Rules{
 
 		for _, command := range specs.Commands{
-			if strings.Contains(specs.Commands, rule.Pattern){
+			if strings.Contains(command, rule.Pattern){
 				commandAlert := core.Alert{
-					FilePath: file.Path
-					Pattern: rule.Pattern
-					Description: rule.Description
-					Severity: rule.Severity
+					FilePath: file.Path,
+					Pattern: rule.Pattern,
+					Description: rule.Description,
+					Severity: rule.Severity,
 					
 				}
-			allAlerts  = append(fileAlerts, commandAlert)	
+			allAlerts  = append(allAlerts, commandAlert)	
 			}
 		}
 	}

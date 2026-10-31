@@ -19,7 +19,7 @@ func (a *Analyzer) GetPaths() []string{
 	} 
 }
 
-func (a *Analyzer) Analyze(file *FileData) ([]core.Alert, error){
+func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 	entries, err := Content(file.Path)
 	if err != nil{
 		return nil, err
@@ -34,21 +34,21 @@ func (a *Analyzer) Analyze(file *FileData) ([]core.Alert, error){
 		if entry.Type == "auth" && entry.Module == "pam_permit.so"{
 			backdoorAlert := core.Alert{
 				FilePath: file.Path,
-				Description: ""
+				Description: "",
 				Severity: "CRITICAL",
-				ExtraInfo: extraInfo
+				ExtraInfo: extraInfo,
 			}
 			allAlerts = append(allAlerts, backdoorAlert)
 		}
 		// Args analysis
 		if entry.Module == "pam_exec.so"{
-			for _, rule := range Rules{
+			for _, rule := range a.Rules{
 				if strings.Contains(entry.Args, rule.Pattern){
 					commandAlert := core.Alert{
-						FilePath: file.Path
-						Description: rule.Description
-						Severity: rule.Severity
-						ExtraInfo: extraInfo
+						FilePath: file.Path,
+						Description: rule.Description,
+						Severity: rule.Severity,
+						ExtraInfo: extraInfo,
 					}
 					allAlerts = append(allAlerts, commandAlert)
 				}
@@ -57,10 +57,10 @@ func (a *Analyzer) Analyze(file *FileData) ([]core.Alert, error){
 		// Path analysis
 		if strings.HasPrefix(entry.Module, "/") && (strings.Contains(entry.Module, "/tmp") || strings.Contains(entry.Module, "/dev/shm")){
 			pathAlert := core.Alert{
-				FilePath: file.Path
-				Description: ""
-				Severity: "HIGH"
-				ExtraInfo: extraInfo
+				FilePath: file.Path,
+				Description: "",
+				Severity: "HIGH",
+				ExtraInfo: extraInfo,
 			}
 			allAlerts = append(allAlerts, pathAlert)
 		}

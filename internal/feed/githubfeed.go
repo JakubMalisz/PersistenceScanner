@@ -20,13 +20,13 @@ type GitHubRule struct{
 func FetchRules(url string) ([]core.DetectionRule, error){
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Get(url)
-	if err != nill{
+	if err != nil{
 		return nil, fmt.Errorf("ERROR: %v", err)
 	}
 	defer resp.Body.Close()
 	
 	if resp.StatusCode != http.StatusOK{
-		return nil, fmt.Errorf("ERROR: %d", err)
+		return nil, fmt.Errorf("ERROR: %v", err)
 	}
 
 	body, err := io.ReadAll(resp.Body)

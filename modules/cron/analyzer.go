@@ -33,47 +33,47 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 		return nil, err
 	}
 
-	var targetUsers, schedules string
-	if len(specs.Users) > 0{
-		targetUsers = strings.Join(specs.Users, ", ")
-	}
-
-	if len(specs.Schedules) > 0{
-		schedules = strings.Join(specs.Schedules ", ")
-	}
-
 	var allAlerts []core.Alert
 
-	if reflect.TypeOf(specs) == CronSpecs{
-		for _, rule := range a.Rules{
-			
-			for _, value := range specs.Variables{
-				if strings.Contains(value, rule.Pattern){
+	switch s := specs.(type) {
+	
+	case *CronSpecs:
+		var targetUsers, schedules string
+		if len(s.Users) > 0 {
+			targetUsers = strings.Join(s.Users, ", ")
+		}
+		if len(s.Schedules) > 0 {
+			schedules = strings.Join(s.Schedules, ", ")
+		}
+
+		for _, rule := range a.Rules {
+			for _, value := range s.Variables {
+				if strings.Contains(value, rule.Pattern) {
 					variableAlert := core.Alert{
-						FilePath: file.Path,
-						Pattern: rule.Pattern,
+						FilePath:    file.Path,
+						Pattern:     rule.Pattern,
 						Description: rule.Description,
-						Severity: rule.Severity,
-						ExtraInfo: "Schedules: " + schedules + "| Users: " + targetUsers,
+						Severity:    rule.Severity,
+						ExtraInfo:   "Schedules: " + schedules + " | Users: " + targetUsers,
 					}
-					allAlerts = append(fileAlerts, variableAlert)
-				}
-			}
-		
-			for _, command := range specs.Commands{
-				if strings.Contains(command, rule.Pattern){
-					commandAlert := core.Alert{
-						FilePath: file.Path,
-						Pattern: rule.Pattern,
-						Description: rule.Description,
-						Severity: rule.Severity,
-						ExtraInfo: "Schedules: " + schedules + "| Users: " + targetUsers,
-					}
-					allAlerts = append(fileAlerts, commandAlert)
+					allAlerts = append(allAlerts, variableAlert)
 				}
 			}
 
-			for _, schedule := range specs.Schedules {
+			for _, command := range s.Commands {
+				if strings.Contains(command, rule.Pattern) {
+					commandAlert := core.Alert{
+						FilePath:    file.Path,
+						Pattern:     rule.Pattern,
+						Description: rule.Description,
+						Severity:    rule.Severity,
+						ExtraInfo:   "Schedules: " + schedules + " | Users: " + targetUsers,
+					}
+					allAlerts = append(allAlerts, commandAlert)
+				}
+			}
+
+			for _, schedule := range s.Schedules {
 				if strings.Contains(schedule, rule.Pattern) {
 					scheduleAlert := core.Alert{
 						FilePath:    file.Path,
@@ -85,21 +85,19 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 					allAlerts = append(allAlerts, scheduleAlert)
 				}
 			}
-			
 		}
-	}
-	if reflect.TypeOf(specs) == CronScriptSpecs{
-		for _, rule := range Rules{
-			for _, command := range specs.Commands{
-				if strings.Contains(specs.Commands, rule.Pattern){
+
+	case *CronScriptSpecs:
+		for _, rule := range a.Rules {
+			for _, command := range s.Commands {
+				if strings.Contains(command, rule.Pattern) {
 					commandAlert := core.Alert{
-						FilePath: file.Path
-						Pattern: rule.Pattern
-						Description: rule.Description
-						Severity: rule.Severity
-						
+						FilePath:    file.Path,
+						Pattern:     rule.Pattern,
+						Description: rule.Description,
+						Severity:    rule.Severity,
 					}
-				allAlerts  = append(fileAlerts, commandAlert)	
+					allAlerts = append(allAlerts, commandAlert)
 				}
 			}
 		}

@@ -8,25 +8,24 @@ import (
 )
 
 type MotdSpecs struct{
-	Commands: []string `json:"commands,omitempty"`
+	Commands []string `json:"commands,omitempty"`
 }
 
 func Content(path string) (*MotdSpecs, error){
 	file, err := os.Open(path)
-	if err := nil{
+	if err != nil{
 		return nil, err
 	}
-	defer Close(file)
+	defer file.Close()
 
 	specs := &MotdSpecs{}
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan(){
 		line := strings.TrimSpace(scanner.Text())
-		if !len(line) == 0 && !strings.HasPrefix(line, "#"){
+		if len(line) != 0 && !strings.HasPrefix(line, "#"){
 			specs.Commands = append(specs.Commands, line)
-		}
-		else{
+		} else{
 			continue
 		}
 

@@ -43,7 +43,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 // Funkcja porownujaca zawartosc pliku z baza zasad detekcji
 	buildAlert := func(specs ServiceSpecs, fieldName string) ([]core.Alert, error){
 		var fileAlerts []core.Alert
-		for _, rule := range Rules{
+		for _, rule := range a.Rules{
 
 				commands := getFieldValues(specs, fieldName)
 

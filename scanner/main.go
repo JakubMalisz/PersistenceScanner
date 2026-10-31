@@ -77,7 +77,7 @@ func main(){
 	
 	var output []core.Alert
 
-	for file := range fileChan{
+	for file := range filesChan{
 		alerts, err := analyzer.Analyze(&file)
 		if err != nil{
 			fmt.Println(err)
@@ -92,8 +92,8 @@ func main(){
 		for _, alert := range output{
 			fmt.Printf("Persistence mechanisms detected:\n%+v\n", alert)
 		}
-	}
-	else{
+	} else{
 		fmt.Print("No persistence mechanisms detected")
 	}
+	
 }
