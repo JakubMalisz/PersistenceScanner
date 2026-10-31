@@ -6,11 +6,10 @@ import (
 	"PersistenceScanner/internal/core"
 	"PersistenceScanner/internal/feed"
 	"PersistenceScanner/scanner"
-	"PersistenceScanner/modules"
 	"PersistenceScanner/modules/cron"
 	"PersistenceScanner/modules/motd"
 	"PersistenceScanner/modules/pam"
-	"PersistenceScanner/modules/systemd"
+	"PersistenceScanner/modules/systemd/services"
 )
 
 func PickModule() string{

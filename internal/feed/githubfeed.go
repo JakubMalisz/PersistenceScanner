@@ -45,7 +45,7 @@ func FetchRules(url string) ([]core.DetectionRule, error){
 		rules = append(rules, core.DetectionRule{
 			Pattern: rule.Indicator,
 			Description: rule.Description,
-			Severity: rule.Severity
+			Severity: rule.Severity,
 		})
 	}
 	return rules, nil
