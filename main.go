@@ -7,6 +7,9 @@ import (
 	"PersistenceScanner/internal/feed"
 	"PersistenceScanner/scanner"
 	"PersistenceScanner/modules"
+	"PersistenceScanner/modules/cron"
+	"PersistenceScanner/modules/motd"
+	"PersistenceScanner/modules/pam"
 	"PersistenceScanner/modules/systemd"
 )
 
