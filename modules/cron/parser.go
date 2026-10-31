@@ -31,8 +31,8 @@ func Content(path string) (any, error){
 	isTab := path == "/etc/crontab" || strings.HasPrefix(path, "/etc/cron.d") || strings.HasPrefix(path, "/var/spool/cron")
 
 	var specs any
-	if isTab{
-		if isTab {
+
+	if isTab {
 		tabSpecs := &CronSpecs{
 			Variables: make(map[string]string),
 		}
