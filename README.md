@@ -1,10 +1,10 @@
 # System_Persistence_Scanner
 
+## * WORK IN PROGRESS... *
+
 ## Indicator of Compromise (IoC) Ruleset for PersistenceScanner
 
 - Purpose: An external, dynamically loaded JSON rule base, injected directly into analytical modules via a network request. It allows updating threat signatures without the need to recompile the Go source code.
-
-- Detection Scope: 
 
 ## Acknowledgments & Sources (Pattern Authors): 
 The database was generated and optimized based on public infosec community research and recognized open-source projects. Malicious behavior signatures draw directly from:
