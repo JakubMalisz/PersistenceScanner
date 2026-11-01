@@ -18,7 +18,7 @@ func (a *Analyzer) GetPaths() []string{
 		"/var/spool/cron",          
 		"/var/spool/cron/crontabs",
 
-		//Script paths
+		
 		"/etc/cron.hourly",
 		"/etc/cron.daily",
 		"/etc/cron.weekly",

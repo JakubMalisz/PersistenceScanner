@@ -23,7 +23,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 
 
 
-// Wyciaganie danych z pol struktury ServiceSpecs
+
 	getFieldValues := func(specs ServiceSpecs, fieldName string) []string{
 		switch fieldName {
 		case "ExecStart":
@@ -40,7 +40,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 	}
 
 	
-// Funkcja porownujaca zawartosc pliku z baza zasad detekcji
+
 	buildAlert := func(specs ServiceSpecs, fieldName string) ([]core.Alert, error){
 		var fileAlerts []core.Alert
 		for _, rule := range a.Rules{
@@ -65,7 +65,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 		}
 			
 	
-// Analiza plikow
+
 	var allAlerts []core.Alert
 
 	specs, err := Content(file.Path)

@@ -50,10 +50,10 @@ func main(){
 	
 
 	fmt.Println("[*] Fetching detection rules...")
-	rulesURL := "https://raw.githubusercontent.com/JakubMalisz/PersistenceScanner/rules.json" 
+	rulesURL := "https://raw.githubusercontent.com/JakubMalisz/PersistenceScanner/main/rules.json" 
 	fetchedRules, err := feed.FetchRules(rulesURL)
 	if err != nil {
-		fmt.Printf("[-] Fetching error: %v\n", err)
+		fmt.Printf("[-] Fetching error")
 		os.Exit(1)
 	}
 	fmt.Println("[+] Detection rules fetched successfuly\n")	
@@ -67,13 +67,13 @@ func main(){
 	}
 	analyzer := modulesRegistry[selectedModule]
 
-	// Pobranie sciezek
+	
 	fmt.Println("[*] Finding file paths...")
 	var paths []string
 	paths = append(paths, analyzer.GetPaths()...)
 	fmt.Printf("[+] Successfuly appended %d paths", len(paths))
 
-	// Skanowanie plikow 
+	
 	fmt.Println("[*] Scanning files...")
 	filesChan := scanner.DirScan(paths)
 	
@@ -89,7 +89,7 @@ func main(){
 		}
 	}
 
-	// Alert print
+	
 	if len(output) > 0{
 		for _, alert := range output{
 			fmt.Printf("Persistence mechanisms detected:\n%+v\n", alert)

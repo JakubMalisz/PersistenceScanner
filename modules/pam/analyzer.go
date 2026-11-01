@@ -30,7 +30,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 	
 	for _, entry := range entries{
 		extraInfo := "Type: " + entry.Type + " | Control: " + entry.Control + " | Module: " + entry.Module + " | Args: " + entry.Args
-		// Backdoor analysis
+		
 		if entry.Type == "auth" && entry.Module == "pam_permit.so"{
 			backdoorAlert := core.Alert{
 				FilePath: file.Path,
@@ -40,7 +40,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 			}
 			allAlerts = append(allAlerts, backdoorAlert)
 		}
-		// Args analysis
+		
 		if entry.Module == "pam_exec.so"{
 			for _, rule := range a.Rules{
 				if strings.Contains(entry.Args, rule.Pattern){
@@ -54,7 +54,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 				}
 			}
 		}
-		// Path analysis
+		
 		if strings.HasPrefix(entry.Module, "/") && (strings.Contains(entry.Module, "/tmp") || strings.Contains(entry.Module, "/dev/shm")){
 			pathAlert := core.Alert{
 				FilePath: file.Path,
