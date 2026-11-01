@@ -27,8 +27,8 @@ func Content(path string) (any, error){
 
 	scanner := bufio.NewScanner(file)
 
-	isSystemCrontab := path == "/etc/crontab" || strings.Contains(path, "/etc/cron.d")
-	isTab := path == "/etc/crontab" || strings.HasPrefix(path, "/etc/cron.d") || strings.HasPrefix(path, "/var/spool/cron")
+	isSystemCrontab := path == "/etc/crontab" || strings.Contains(path, "/etc/cron.d/")
+	isTab := path == "/etc/crontab" || strings.HasPrefix(path, "/etc/cron.d/") || strings.HasPrefix(path, "/var/spool/cron/")
 
 	var specs any
 
