@@ -18,13 +18,13 @@ const (
 	Green  = "\033[32m"
 	Yellow = "\033[33m"
 	Cyan   = "\033[36m"
-	Bold   = "\033[1m"
+	
 )
 
 func PickModule() string{
 	
 	for{
-		fmt.Print("\n\n%s=== PScanner ===%s\n", Bold, Cyan, Reset)
+		fmt.Print("\n\n%s=== PScanner ===%s\n", Cyan, Reset)
 		fmt.Printf("%s[1]%s Systemd Services Scan\n", Yellow, Reset)
 		fmt.Printf("%s[2]%s Cron Scan\n", Yellow, Reset)
 		fmt.Printf("%s[3]%s Motd Files Scan\n", Yellow, Reset)
