@@ -160,53 +160,13 @@
     "severity": "LOW"
   },
   {
-    "indicator": "pam_permit\\.so",
-    "description": "PAM module granting unconditional access (Authentication bypass technique)",
+    "indicator": "auth\\s+sufficient\\s+pam_permit\\.so",
+    "description": "PAM authentication bypass backdoor (Unconditional access granted)",
     "severity": "CRITICAL"
   },
   {
     "indicator": "pam_exec\\.so",
     "description": "Execution of external commands during PAM authentication (Potential credential harvesting or backdoor trigger)",
     "severity": "HIGH"
-  },
-  {
-    "indicator": "pam_unix\\.so.*nullok",
-    "description": "PAM configuration allowing empty passwords",
-    "severity": "HIGH"
-  },
-  {
-    "indicator": "pam_rootok\\.so",
-    "description": "PAM module allowing passwordless authentication for root user (Review for unauthorized placement)",
-    "severity": "MEDIUM"
-  },
-  {
-    "indicator": "pam_succeed_if\\.so",
-    "description": "PAM conditional success module (May be used for targeted authentication bypass)",
-    "severity": "MEDIUM"
-  },
-  {
-    "indicator": "pam_systemd\\.so",
-    "description": "Standard systemd PAM module. Ensure it's not being used maliciously in unexpected contexts.",
-    "severity": "LOW"
-  },
-  {
-    "indicator": "pam_env\\.so",
-    "description": "PAM module setting environment variables. Can be abused to alter execution flow.",
-    "severity": "LOW"
-  },
-  {
-    "indicator": "update-motd",
-    "description": "Reference to MOTD update mechanism (Potential unauthorized payload injection point)",
-    "severity": "LOW"
-  },
-  {
-    "indicator": "/etc/update-motd\\.d/",
-    "description": "Direct execution or modification within the dynamic MOTD script directory",
-    "severity": "MEDIUM"
-  },
-  {
-    "indicator": "run-parts",
-    "description": "Execution of scripts in a directory (Often used in MOTD generation, verify script integrity)",
-    "severity": "LOW"
   }
 ]

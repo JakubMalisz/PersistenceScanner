@@ -1,7 +1,6 @@
 package motd
 import (
 
-	"strings"
 	"PersistenceScanner/internal/core"
 	"regexp"
 )
