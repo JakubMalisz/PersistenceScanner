@@ -4,6 +4,7 @@ import (
 
 	"strings"
 	"PersistenceScanner/internal/core"
+	"regexp"
 )
 
 type Analyzer struct {
@@ -48,8 +49,8 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 				commands := getFieldValues(specs, fieldName)
 
 				for _, command := range commands{
-					if strings.Contains(command, rule.Pattern){
-
+					match, err := regexp.MatchString(rule.Pattern, command)
+					if err == nil && match {
 						commandAlert := core.Alert{
 							FilePath:    file.Path, 
 							Pattern:     rule.Pattern,

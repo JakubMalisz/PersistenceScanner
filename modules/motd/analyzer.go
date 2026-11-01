@@ -3,6 +3,7 @@ import (
 
 	"strings"
 	"PersistenceScanner/internal/core"
+	"regexp"
 )
 
 type Analyzer struct {
@@ -25,7 +26,8 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 	for _, rule := range a.Rules{
 
 		for _, command := range specs.Commands{
-			if strings.Contains(command, rule.Pattern){
+			match, err := regexp.MatchString(rule.Pattern, command)
+			if err == nil && match {
 				commandAlert := core.Alert{
 					FilePath: file.Path,
 					Pattern: rule.Pattern,
@@ -37,6 +39,6 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 			}
 		}
 	}
-	return allAlerts, err
+	return allAlerts, nil
 
 }	

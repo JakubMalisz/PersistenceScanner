@@ -14,12 +14,12 @@ import (
 
 func PickModule() string{
 	for{
-		fmt.Print("Pick scanning module: ")
-		fmt.Print("[1] Systemd Services Scan")
-		fmt.Print("[2] Cron Scan")
-		fmt.Print("[3] Motd Files Scan")
-		fmt.Print("[4] PAM Modules Scan")
-		fmt.Print("[0] Exit")
+		fmt.Print("Pick scanning module:\n")
+		fmt.Print("[1] Systemd Services Scan\n")
+		fmt.Print("[2] Cron Scan\n")
+		fmt.Print("[3] Motd Files Scan\n")
+		fmt.Print("[4] PAM Modules Scan\n")
+		fmt.Print("[0] Exit\n")
 		
 		var moduleNumber int
 		fmt.Scan(&moduleNumber)
@@ -68,13 +68,13 @@ func main(){
 	analyzer := modulesRegistry[selectedModule]
 
 	
-	fmt.Println("[*] Finding file paths...")
+	
 	var paths []string
 	paths = append(paths, analyzer.GetPaths()...)
-	fmt.Printf("[+] Successfuly appended %d paths", len(paths))
+	
 
 	
-	fmt.Println("[*] Scanning files...")
+	fmt.Println("[*] Scanning files...\n")
 	filesChan := scanner.DirScan(paths)
 	
 	var output []core.Alert
@@ -92,10 +92,10 @@ func main(){
 	
 	if len(output) > 0{
 		for _, alert := range output{
-			fmt.Printf("Persistence mechanisms detected:\n%+v\n", alert)
+			fmt.Printf("[!] Persistence mechanisms detected:\n%+v\n", alert)
 		}
 	} else{
-		fmt.Print("No persistence mechanisms detected")
+		fmt.Print("[*] No persistence mechanisms detected")
 	}
 	
 }

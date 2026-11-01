@@ -3,7 +3,7 @@ import (
 
 	"strings"
 	"PersistenceScanner/internal/core"
-
+	"regexp"
 )
 
 type Analyzer struct {
@@ -47,8 +47,10 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 		}
 
 		for _, rule := range a.Rules {
-			for _, value := range s.Variables {
-				if strings.Contains(value, rule.Pattern) {
+			for key, value := range s.Variables {
+				fullVariable := key + "=" + value
+				match, err := regexp.MatchString(rule.Pattern, fullVariable)
+				if err == nil && match {
 					variableAlert := core.Alert{
 						FilePath:    file.Path,
 						Pattern:     rule.Pattern,
@@ -61,7 +63,8 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 			}
 
 			for _, command := range s.Commands {
-				if strings.Contains(command, rule.Pattern) {
+				match, err := regexp.MatchString(rule.Pattern, command)
+				if err == nil && match {
 					commandAlert := core.Alert{
 						FilePath:    file.Path,
 						Pattern:     rule.Pattern,
@@ -74,7 +77,8 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 			}
 
 			for _, schedule := range s.Schedules {
-				if strings.Contains(schedule, rule.Pattern) {
+				match, err := regexp.MatchString(rule.Pattern, schedule)
+				if err == nil && match {
 					scheduleAlert := core.Alert{
 						FilePath:    file.Path,
 						Pattern:     rule.Pattern,
@@ -90,7 +94,8 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 	case *CronScriptSpecs:
 		for _, rule := range a.Rules {
 			for _, command := range s.Commands {
-				if strings.Contains(command, rule.Pattern) {
+				match, err := regexp.MatchString(rule.Pattern, command)
+				if err == nil && match {
 					commandAlert := core.Alert{
 						FilePath:    file.Path,
 						Pattern:     rule.Pattern,

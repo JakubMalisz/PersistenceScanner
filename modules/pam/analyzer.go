@@ -3,6 +3,7 @@ import (
 
 	"strings"
 	"PersistenceScanner/internal/core"
+	"regexp"
 )
 
 
@@ -31,36 +32,30 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 	for _, entry := range entries{
 		extraInfo := "Type: " + entry.Type + " | Control: " + entry.Control + " | Module: " + entry.Module + " | Args: " + entry.Args
 		
-		if entry.Type == "auth" && entry.Module == "pam_permit.so"{
-			backdoorAlert := core.Alert{
-				FilePath: file.Path,
-				Description: "",
-				Severity: "CRITICAL",
-				ExtraInfo: extraInfo,
-			}
-			allAlerts = append(allAlerts, backdoorAlert)
+		line := entry.Type + " " + entry.Control + " " + entry.Module
+		if entry.Args != "" {
+			line += " " + entry.Args
 		}
-		
-		if entry.Module == "pam_exec.so"{
-			for _, rule := range a.Rules{
-				if strings.Contains(entry.Args, rule.Pattern){
-					commandAlert := core.Alert{
-						FilePath: file.Path,
-						Description: rule.Description,
-						Severity: rule.Severity,
-						ExtraInfo: extraInfo,
-					}
-					allAlerts = append(allAlerts, commandAlert)
+
+		for _, rule := range a.Rules {
+			match, err := regexp.MatchString(rule.Pattern, line)
+			if err == nil && match {
+				alert := core.Alert{
+					FilePath:    file.Path,
+					Description: rule.Description,
+					Severity:    rule.Severity,
+					ExtraInfo:   extraInfo,
 				}
+				allAlerts = append(allAlerts, alert)
 			}
 		}
-		
-		if strings.HasPrefix(entry.Module, "/") && (strings.Contains(entry.Module, "/tmp") || strings.Contains(entry.Module, "/dev/shm")){
+
+		if strings.HasPrefix(entry.Module, "/") && (strings.Contains(entry.Module, "/tmp") || strings.Contains(entry.Module, "/dev/shm")) {
 			pathAlert := core.Alert{
-				FilePath: file.Path,
-				Description: "",
-				Severity: "HIGH",
-				ExtraInfo: extraInfo,
+				FilePath:    file.Path,
+				Description: "Execution from suspicious directory (/tmp or /dev/shm)",
+				Severity:    "HIGH",
+				ExtraInfo:   extraInfo,
 			}
 			allAlerts = append(allAlerts, pathAlert)
 		}

@@ -5,17 +5,17 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "nc -e",
+    "indicator": "nc\\s+-e",
     "description": "Reverse shell attempt using netcat with execution flag",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "ncat --exec",
+    "indicator": "ncat\\s+--exec",
     "description": "Reverse shell attempt using Ncat with execution flag",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "bash -i",
+    "indicator": "bash\\s+-i",
     "description": "Interactive Bash shell initiation (potential reverse shell)",
     "severity": "CRITICAL"
   },
@@ -30,72 +30,67 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "python -c 'import socket",
+    "indicator": "python.*-c.*import\\s+socket",
     "description": "Python network socket creation attempt (Reverse shell pattern)",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "python3 -c 'import socket",
-    "description": "Python 3 network socket creation attempt (Reverse shell pattern)",
-    "severity": "CRITICAL"
-  },
-  {
-    "indicator": "perl -e 'use Socket",
+    "indicator": "perl\\s+-e.*use\\s+Socket",
     "description": "Perl socket creation attempt (Reverse shell pattern)",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "php -r '$sock=fsockopen",
+    "indicator": "php\\s+-r.*fsockopen",
     "description": "PHP socket connection attempt (Reverse shell pattern)",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "ruby -rsocket -e",
+    "indicator": "ruby\\s+-rsocket\\s+-e",
     "description": "Ruby socket connection attempt (Reverse shell pattern)",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "lua -e 'require(\"socket\")",
+    "indicator": "lua\\s+-e.*require.*socket",
     "description": "Lua socket connection attempt (Reverse shell pattern)",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "socat exec:",
+    "indicator": "socat\\s+exec:",
     "description": "Socat execution relay attempt (Reverse shell or port forwarding)",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "curl -s",
+    "indicator": "curl\\s+-s",
     "description": "Silent HTTP request via curl (Potential fileless payload download)",
     "severity": "HIGH"
   },
   {
-    "indicator": "wget -qO-",
+    "indicator": "wget\\s+-qO-",
     "description": "Quiet payload retrieval piped to standard output",
     "severity": "HIGH"
   },
   {
-    "indicator": "| sh",
+    "indicator": "\\|\\s*sh",
     "description": "Piping raw remote stream directly into standard shell execution",
     "severity": "HIGH"
   },
   {
-    "indicator": "| bash",
+    "indicator": "\\|\\s*bash",
     "description": "Piping raw remote stream directly into Bash shell execution",
     "severity": "HIGH"
   },
   {
-    "indicator": "| python",
+    "indicator": "\\|\\s*python",
     "description": "Piping raw remote stream directly into Python interpreter",
     "severity": "HIGH"
   },
   {
-    "indicator": "base64 -d",
+    "indicator": "base64\\s+-d",
     "description": "Base64 decoding invocation (Command obfuscation attempt)",
     "severity": "MEDIUM"
   },
   {
-    "indicator": "xxd -r",
+    "indicator": "xxd\\s+-r",
     "description": "Hex dump reverse transformation (Binary recreation attempt)",
     "severity": "MEDIUM"
   },
@@ -105,12 +100,12 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "/tmp/.",
+    "indicator": "/tmp/\\.",
     "description": "Execution of hidden binary from /tmp directory",
     "severity": "HIGH"
   },
   {
-    "indicator": "/var/tmp/.",
+    "indicator": "/var/tmp/\\.",
     "description": "Execution of hidden binary from /var/tmp directory",
     "severity": "HIGH"
   },
@@ -130,22 +125,22 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "chattr +i",
+    "indicator": "chattr\\s+\\+i",
     "description": "Immutable attribute set on file (Anti-removal/defense evasion)",
     "severity": "HIGH"
   },
   {
-    "indicator": "chattr +a",
+    "indicator": "chattr\\s+\\+a",
     "description": "Append-only attribute set on file (Tamper resistance)",
     "severity": "MEDIUM"
   },
   {
-    "indicator": "history -c",
+    "indicator": "history\\s+-c",
     "description": "Command history clearance attempt (Anti-forensics)",
     "severity": "MEDIUM"
   },
   {
-    "indicator": "unset HISTFILE",
+    "indicator": "unset\\s+HISTFILE",
     "description": "Disabling shell command logging (Anti-forensics)",
     "severity": "MEDIUM"
   },
@@ -155,13 +150,63 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "stratum+tcp://",
+    "indicator": "stratum\\+tcp://",
     "description": "Cryptocurrency mining pool connection protocol detected",
     "severity": "HIGH"
   },
   {
     "indicator": "nohup",
     "description": "Process detachment from terminal session (Background persistence execution)",
+    "severity": "LOW"
+  },
+  {
+    "indicator": "pam_permit\\.so",
+    "description": "PAM module granting unconditional access (Authentication bypass technique)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "pam_exec\\.so",
+    "description": "Execution of external commands during PAM authentication (Potential credential harvesting or backdoor trigger)",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "pam_unix\\.so.*nullok",
+    "description": "PAM configuration allowing empty passwords",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "pam_rootok\\.so",
+    "description": "PAM module allowing passwordless authentication for root user (Review for unauthorized placement)",
+    "severity": "MEDIUM"
+  },
+  {
+    "indicator": "pam_succeed_if\\.so",
+    "description": "PAM conditional success module (May be used for targeted authentication bypass)",
+    "severity": "MEDIUM"
+  },
+  {
+    "indicator": "pam_systemd\\.so",
+    "description": "Standard systemd PAM module. Ensure it's not being used maliciously in unexpected contexts.",
+    "severity": "LOW"
+  },
+  {
+    "indicator": "pam_env\\.so",
+    "description": "PAM module setting environment variables. Can be abused to alter execution flow.",
+    "severity": "LOW"
+  },
+  {
+    "indicator": "update-motd",
+    "description": "Reference to MOTD update mechanism (Potential unauthorized payload injection point)",
+    "severity": "LOW"
+  },
+  {
+    "indicator": "/etc/update-motd\\.d/",
+    "description": "Direct execution or modification within the dynamic MOTD script directory",
+    "severity": "MEDIUM"
+  },
+  {
+    "indicator": "run-parts",
+    "description": "Execution of scripts in a directory (Often used in MOTD generation, verify script integrity)",
     "severity": "LOW"
   }
 ]
