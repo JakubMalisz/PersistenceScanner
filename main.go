@@ -14,33 +14,34 @@ import (
 
 func PickModule() string{
 	
-	fmt.Print("Pick scanning module:\n")
-	fmt.Print("[1] Systemd Services Scan\n")
-	fmt.Print("[2] Cron Scan\n")
-	fmt.Print("[3] Motd Files Scan\n")
-	fmt.Print("[4] PAM Modules Scan\n")
-	fmt.Print("[0] Exit\n")
-		
-	var moduleNumber int
-	fmt.Scan(&moduleNumber)
-	switch moduleNumber{
-	case 1:
-		return "services"
-	case 2:
-		return "cron"
-	case 3:
-		return "motd"
-	case 4:
-		return "pam"
-	case 0:
-		fmt.Println("[+] Exiting...")
-		os.Exit(0)
-	default:
-		fmt.Println("[-] Incorrect module")
-		var discard string
-		fmt.Scanln(&discard)
+	for{
+		fmt.Print("Pick scanning module:\n")
+		fmt.Print("[1] Systemd Services Scan\n")
+		fmt.Print("[2] Cron Scan\n")
+		fmt.Print("[3] Motd Files Scan\n")
+		fmt.Print("[4] PAM Modules Scan\n")
+		fmt.Print("[0] Exit\n")
+			
+		var moduleNumber int
+		fmt.Scan(&moduleNumber)
+		switch moduleNumber{
+		case 1:
+			return "services"
+		case 2:
+			return "cron"
+		case 3:
+			return "motd"
+		case 4:
+			return "pam"
+		case 0:
+			fmt.Println("[+] Exiting...")
+			os.Exit(0)
+		default:
+			fmt.Println("[-] Incorrect module")
+			var discard string
+			fmt.Scanln(&discard)
+		}
 	}
-	
 }
 
 
