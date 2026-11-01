@@ -1,4 +1,4 @@
-module SystemdPersistenceScanner
+module PersistenceScanner
 
 go 1.24.4
 
