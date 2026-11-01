@@ -18,7 +18,6 @@ const (
 	Green  = "\033[32m"
 	Yellow = "\033[33m"
 	Cyan   = "\033[36m"
-	
 )
 
 func PickModule() string{
@@ -103,10 +102,10 @@ func main(){
 
 		
 		if len(output) > 0{
-			fmt.Printf("\n%s%s[!] Persistence mechanisms detected:%s\n", Bold, Red, Reset)
+			fmt.Printf("\n%s%s[!] Persistence mechanisms detected:%s\n", Red, Reset)
 			for _, alert := range output{
 				fmt.Printf("%s[-] FILE:%s %s\n", Red, Reset, alert.FilePath)
-			fmt.Printf("    %sSeverity:%s %s%s%s\n", Yellow, Reset, Bold, alert.Severity, Reset)
+			fmt.Printf("    %sSeverity:%s %s%s%s\n", Yellow, Reset, alert.Severity, Reset)
 			fmt.Printf("    %sPattern:%s  %s\n", Cyan, Reset, alert.Pattern)
 			fmt.Printf("    %sDescription:%s     %s\n", Cyan, Reset, alert.Description)
 			fmt.Printf("    %sExtra:%s    %s\n", Cyan, Reset, alert.ExtraInfo)
