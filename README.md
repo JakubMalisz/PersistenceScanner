@@ -1,8 +1,8 @@
-# Linux Persistence Scanner (PScanner)
+# Linux Persistence Scanner
 
 ## TL;DR
 
-**PScanner** is a modular, Go-based Blue Team utility designed to hunt for backdoors, rootkits, and persistence mechanisms across Linux environments. 
+Modular, Go-based Blue Team utility designed to hunt for backdoors, rootkits, and persistence mechanisms across Linux environments. 
 
 Instead of relying on easily bypassed basic string matching, it uses a centralized, dynamic JSON Threat Intelligence feed and a pre-compiled Regular Expression engine. This allows it to effectively catch common attacker obfuscation techniques, such as hidden memory execution, absolute path overrides, and whitespace manipulation.
 
