@@ -32,7 +32,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 					Pattern: rule.Pattern,
 					Description: rule.Description,
 					Severity: rule.Severity,
-					ExtraInfo: "Motd Script Execution"
+					ExtraInfo: "Motd Script Execution",
 					
 				}
 			allAlerts  = append(allAlerts, commandAlert)	

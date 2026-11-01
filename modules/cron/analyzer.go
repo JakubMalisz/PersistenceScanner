@@ -101,7 +101,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 						Pattern:     rule.Pattern,
 						Description: rule.Description,
 						Severity:    rule.Severity,
-						ExtraInfo: "Cron Script Execution"
+						ExtraInfo: "Cron Script Execution",
 					}
 					allAlerts = append(allAlerts, commandAlert)
 				}
