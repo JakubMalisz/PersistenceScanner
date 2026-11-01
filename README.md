@@ -116,7 +116,7 @@ When a threat is identified, the engine constructs a standardized `core.Alert` s
 ## Acknowledgments & Sources (Pattern Authors): 
 The database was generated and optimized based on public infosec community research and recognized open-source projects. Malicious behavior signatures draw directly from:
 
-- MITRE ATT&CK® Framework – tactic categorization.
+- MITRE ATT&CK® Framework
 
 - GTFOBins (Emilio Pinna, Andrea Cardaci, and the community) – patterns for abusing native Unix/Linux binaries.
 

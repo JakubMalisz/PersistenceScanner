@@ -12,16 +12,27 @@ import (
 	"PersistenceScanner/modules/systemd/services"
 )
 
+const (
+	Reset  = "\033[0m"
+	Red    = "\033[31m"
+	Green  = "\033[32m"
+	Yellow = "\033[33m"
+	Cyan   = "\033[36m"
+	Bold   = "\033[1m"
+)
+
 func PickModule() string{
 	
 	for{
-		fmt.Print("Pick scanning module:\n")
-		fmt.Print("[1] Systemd Services Scan\n")
-		fmt.Print("[2] Cron Scan\n")
-		fmt.Print("[3] Motd Files Scan\n")
-		fmt.Print("[4] PAM Modules Scan\n")
-		fmt.Print("[0] Exit\n")
-			
+		fmt.Print("\n\n%s%s=== PScanner ===%s\n", Bold, Cyan, Reset)
+		fmt.Printf("%s[1]%s Systemd Services Scan\n", Yellow, Reset)
+		fmt.Printf("%s[2]%s Cron Scan\n", Yellow, Reset)
+		fmt.Printf("%s[3]%s Motd Files Scan\n", Yellow, Reset)
+		fmt.Printf("%s[4]%s PAM Modules Scan\n", Yellow, Reset)
+		fmt.Printf("%s[0]%s Exit\n", Red, Reset)
+		
+		fmt.Printf("Pick scanning module: ")
+
 		var moduleNumber int
 		fmt.Scan(&moduleNumber)
 		switch moduleNumber{
@@ -34,10 +45,10 @@ func PickModule() string{
 		case 4:
 			return "pam"
 		case 0:
-			fmt.Println("[+] Exiting...")
+			fmt.Printf("%s[+] Exiting...%s\n", Green, Reset)
 			os.Exit(0)
 		default:
-			fmt.Println("[-] Incorrect module")
+			fmt.Printf("%s[-] Incorrect module. Try again.%s\n", Red, Reset)
 			var discard string
 			fmt.Scanln(&discard)
 		}
@@ -92,11 +103,16 @@ func main(){
 
 		
 		if len(output) > 0{
+			fmt.Printf("\n%s%s[!] Persistence mechanisms detected:%s\n", Bold, Red, Reset)
 			for _, alert := range output{
-				fmt.Printf("[!] Persistence mechanisms detected:\n%+v\n", alert)
+				fmt.Printf("%s[-] FILE:%s %s\n", Red, Reset, alert.FilePath)
+			fmt.Printf("    %sSeverity:%s %s%s%s\n", Yellow, Reset, Bold, alert.Severity, Reset)
+			fmt.Printf("    %sPattern:%s  %s\n", Cyan, Reset, alert.Pattern)
+			fmt.Printf("    %sDescription:%s     %s\n", Cyan, Reset, alert.Description)
+			fmt.Printf("    %sExtra:%s    %s\n", Cyan, Reset, alert.ExtraInfo)
 			}
 		} else{
-			fmt.Print("[*] No persistence mechanisms detected")
+			fmt.Printf("\n%s[+] No persistence mechanisms detected.%s\n", Green, Reset)
 		}
 	}
 }
