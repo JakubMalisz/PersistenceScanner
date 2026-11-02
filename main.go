@@ -10,7 +10,7 @@ import (
 	"PersistenceScanner/modules/motd"
 	"PersistenceScanner/modules/pam"
 	"PersistenceScanner/modules/systemd/services"
-	"strings"
+	
 )
 
 const (
