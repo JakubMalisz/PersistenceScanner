@@ -86,8 +86,8 @@ The scanner is an open platform designed to easily integrate new attack vectors.
 
 ## ⚠️ Limitations & Obfuscation Disclaimer
 
-* **Configuration Files (PAM, Systemd, Crontab Tables)**: **Fully Supported.** Multi-line parsing for these files is 100% complete and captures all valid formatting.
-* **Executable Shell Scripts (`cron.daily`, `motd`, etc.)**: **Partial Support.** The scanner detects multi-line commands split with `\`, but does not yet cover all Bash obfuscation techniques. Highly obfuscated scripts may bypass detection in the current release.
+* **Configuration Files (PAM, Systemd, Crontab Tables)**: Multi-line parsing for these files is 100% complete and captures all valid formatting.
+* **Executable Shell Scripts (`cron.daily`, `motd`, etc.)**: The scanner detects multi-line commands split with `\`, but does not yet cover all Bash obfuscation techniques. Highly obfuscated scripts may bypass detection in the current release.
 
 ## Installation & Execution
 
