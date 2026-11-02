@@ -27,13 +27,24 @@ func Content(path string) (*ServiceSpecs, error){
 	specs := &ServiceSpecs{}
 	scanner := bufio.NewScanner(file)
 
+	var buffer string
+	 
 	for scanner.Scan(){
-		line := strings.TrimSpace(scanner.Text())
+		rawLine := strings.TrimSpace(scanner.Text())
 
-		if len(line) == 0 || strings.HasPrefix(line, "#") || strings.HasPrefix(line, ";") || strings.HasPrefix(line, "[") {
+		if len(rawLine) == 0 || strings.HasPrefix(rawLine, "#") || strings.HasPrefix(rawLine, ";") || strings.HasPrefix(rawLine, "[") {
 			continue
 		}
 		
+		if strings.HasSuffix(rawLine, "\\"){
+			buffer += strings.TrimSuffix(rawLine, "\\") + " "
+			continue
+
+		}
+
+		line := buffer + rawLine
+		buffer = ""
+
 		parts := strings.SplitN(line, "=", 2)
 		if len(parts) != 2{
 			continue

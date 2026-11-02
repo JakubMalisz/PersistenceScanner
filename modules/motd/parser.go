@@ -21,9 +21,19 @@ func Content(path string) (*MotdSpecs, error){
 	specs := &MotdSpecs{}
 	scanner := bufio.NewScanner(file)
 
+	var buffer string
+
 	for scanner.Scan(){
-		line := strings.TrimSpace(scanner.Text())
-		if len(line) != 0 && !strings.HasPrefix(line, "#"){
+		rawLine := strings.TrimSpace(scanner.Text())
+		if len(rawLine) != 0 && !strings.HasPrefix(rawLine, "#"){
+			if strings.HasSuffix(rawLine, "\\"){
+				buffer += strings.TrimSuffix(rawLine, "\\") + " "
+				continue
+			}
+
+			line := buffer + rawLine
+			buffer = ""
+
 			specs.Commands = append(specs.Commands, line)
 		} else{
 			continue

@@ -24,12 +24,22 @@ func Content(path string) ([]PamSpecs, error){
 	var entries []PamSpecs
 	scanner := bufio.NewScanner(file)
 
+	var buffer string
+
 	for scanner.Scan(){
-		line := strings.TrimSpace(scanner.Text())
-		if len(line) == 0 || strings.HasPrefix(line, "#"){
+		rawLine := strings.TrimSpace(scanner.Text())
+		if len(rawLine) == 0 || strings.HasPrefix(rawLine, "#"){
+			continue
+		}
+
+		if strings.HasSuffix(rawLine, "\\"){
+			buffer += strings.TrimSuffix(rawLine, "\\") + " "
 			continue
 		}
 		
+		line := buffer + rawLine
+		buffer = ""
+
 		parts := strings.Fields(line)
 		if len(parts) < 3 { 
 			continue 

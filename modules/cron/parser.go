@@ -38,11 +38,21 @@ func Content(path string) (any, error){
 		}
 		specs = tabSpecs 
 
+		var buffer string
+
 		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if len(line) == 0 || strings.HasPrefix(line, "#") {
+			rawLine := strings.TrimSpace(scanner.Text())
+			if len(rawLine) == 0 || strings.HasPrefix(rawLine, "#") {
 				continue
 			}
+
+			if strings.HasSuffix(rawLine, "\\"){
+				buffer += strings.TrimSuffix(rawLine, "\\") + " "
+				continue
+			}
+
+			line := buffer + rawLine
+			buffer = ""
 
 			if strings.Contains(line, "=") && !strings.Contains(line, "@") {
 				variableParts := strings.SplitN(line, "=", 2)
@@ -81,9 +91,18 @@ func Content(path string) (any, error){
 		scriptSpecs := &CronScriptSpecs{}
 		specs = scriptSpecs
 
+		var buffer string
 		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if len(line) != 0 && !strings.HasPrefix(line, "#") {
+			rawLine := strings.TrimSpace(scanner.Text())
+			if len(rawLine) != 0 && !strings.HasPrefix(rawLine, "#") {
+				if strings.HasSuffix(rawLine, "\\"){
+					buffer += strings.TrimSuffix(rawLine, "\\") + " "
+					continue
+				}
+
+				line := buffer + rawLine
+				buffer = ""
+
 				scriptSpecs.Commands = append(scriptSpecs.Commands, line)
 			} else {
 				continue
