@@ -52,7 +52,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 					if err == nil && match {
 						commandAlert := core.Alert{
 							FilePath:    file.Path, 
-							Pattern:     rule.Pattern,
+							Pattern:     command,
 							Description: rule.Description,
 							Severity:    rule.Severity,
 							ExtraInfo: "",

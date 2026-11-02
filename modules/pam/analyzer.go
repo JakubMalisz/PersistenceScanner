@@ -42,6 +42,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 			if err == nil && match {
 				alert := core.Alert{
 					FilePath:    file.Path,
+					Pattern: line,
 					Description: rule.Description,
 					Severity:    rule.Severity,
 					ExtraInfo:   extraInfo,
@@ -53,6 +54,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 		if strings.HasPrefix(entry.Module, "/") && (strings.Contains(entry.Module, "/tmp") || strings.Contains(entry.Module, "/dev/shm")) {
 			pathAlert := core.Alert{
 				FilePath:    file.Path,
+				Pattern: line,
 				Description: "Execution from suspicious directory (/tmp or /dev/shm)",
 				Severity:    "HIGH",
 				ExtraInfo:   extraInfo,

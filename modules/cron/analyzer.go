@@ -53,7 +53,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 				if err == nil && match {
 					variableAlert := core.Alert{
 						FilePath:    file.Path,
-						Pattern:     rule.Pattern,
+						Pattern:     fullVariable,
 						Description: rule.Description,
 						Severity:    rule.Severity,
 						ExtraInfo:   "Schedules: " + schedules + " | Users: " + targetUsers,
@@ -67,7 +67,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 				if err == nil && match {
 					commandAlert := core.Alert{
 						FilePath:    file.Path,
-						Pattern:     rule.Pattern,
+						Pattern:     command,
 						Description: rule.Description,
 						Severity:    rule.Severity,
 						ExtraInfo:   "Schedules: " + schedules + " | Users: " + targetUsers,
@@ -81,7 +81,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 				if err == nil && match {
 					scheduleAlert := core.Alert{
 						FilePath:    file.Path,
-						Pattern:     rule.Pattern,
+						Pattern:     schedule,
 						Description: rule.Description,
 						Severity:    rule.Severity,
 						ExtraInfo:   "Users: " + targetUsers,
@@ -98,7 +98,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 				if err == nil && match {
 					commandAlert := core.Alert{
 						FilePath:    file.Path,
-						Pattern:     rule.Pattern,
+						Pattern:     command,
 						Description: rule.Description,
 						Severity:    rule.Severity,
 						ExtraInfo: "Cron Script Execution",
