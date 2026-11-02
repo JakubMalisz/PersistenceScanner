@@ -30,31 +30,6 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "python.*-c.*import\\s+socket",
-    "description": "Python network socket creation attempt (Reverse shell pattern)",
-    "severity": "CRITICAL"
-  },
-  {
-    "indicator": "perl\\s+-e.*use\\s+Socket",
-    "description": "Perl socket creation attempt (Reverse shell pattern)",
-    "severity": "CRITICAL"
-  },
-  {
-    "indicator": "php\\s+-r.*fsockopen",
-    "description": "PHP socket connection attempt (Reverse shell pattern)",
-    "severity": "CRITICAL"
-  },
-  {
-    "indicator": "ruby\\s+-rsocket\\s+-e",
-    "description": "Ruby socket connection attempt (Reverse shell pattern)",
-    "severity": "CRITICAL"
-  },
-  {
-    "indicator": "lua\\s+-e.*require.*socket",
-    "description": "Lua socket connection attempt (Reverse shell pattern)",
-    "severity": "CRITICAL"
-  },
-  {
     "indicator": "socat\\s+exec:",
     "description": "Socat execution relay attempt (Reverse shell or port forwarding)",
     "severity": "CRITICAL"
@@ -82,31 +57,6 @@
   {
     "indicator": "\\|\\s*python",
     "description": "Piping raw remote stream directly into Python interpreter",
-    "severity": "HIGH"
-  },
-  {
-    "indicator": "base64\\s+-d",
-    "description": "Base64 decoding invocation (Command obfuscation attempt)",
-    "severity": "MEDIUM"
-  },
-  {
-    "indicator": "xxd\\s+-r",
-    "description": "Hex dump reverse transformation (Binary recreation attempt)",
-    "severity": "MEDIUM"
-  },
-  {
-    "indicator": "/dev/shm",
-    "description": "Execution from shared memory space (RAM disk evasion technique)",
-    "severity": "HIGH"
-  },
-  {
-    "indicator": "/tmp/\\.",
-    "description": "Execution of hidden binary from /tmp directory",
-    "severity": "HIGH"
-  },
-  {
-    "indicator": "/var/tmp/\\.",
-    "description": "Execution of hidden binary from /var/tmp directory",
     "severity": "HIGH"
   },
   {
@@ -167,6 +117,41 @@
   {
     "indicator": "pam_exec\\.so",
     "description": "Execution of external commands during PAM authentication (Potential credential harvesting or backdoor trigger)",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "base64\\s+(-d|--decode)",
+    "description": "Base64 decoding invocation, often used to conceal malicious commands.",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "echo\\s+[A-Za-z0-9+/=]{12,}\\s*\\|\\s*(ba)?sh",
+    "description": "Base64 encoded string piped directly into a shell interpreter.",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "printf\\s+['\"].*(\\\\\\\\x[0-9a-fA-F]{2}){3,}",
+    "description": "Hex-encoded string payload constructed via printf.",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "(xxd\\s+-r|hexdump|od\\s+-)",
+    "description": "Hexadecimal or binary dumping utility used to reconstruct obfuscated payloads.",
+    "severity": "HIGH"
+  },
+  {
+    "indicator": "rev\\s*\\|\\s*(ba)?sh",
+    "description": "Reversed command string piped directly into a shell interpreter.",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "(python[23]?|perl|php|ruby|lua)\\s+-(c|e|r)\\s+[\"'].*(socket|subprocess|eval|exec|system)",
+    "description": "Inline script execution using alternative system interpreters.",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "(/tmp|/dev/shm|/var/tmp|/run/user)/[a-zA-Z0-9._-]+",
+    "description": "Direct execution of script or binary from non-standard temporary directories.",
     "severity": "HIGH"
   }
 ]

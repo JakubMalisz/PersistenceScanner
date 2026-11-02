@@ -108,10 +108,7 @@ func main(){
 			for _, alert := range output{
 				fmt.Printf("%s[-] FILE:%s %s\n", Red, Reset, alert.FilePath)
 				fmt.Printf("    %sSeverity:%s %s%s%s\n", Yellow, Reset, Bold, alert.Severity, Reset)
-
-				cleanPattern := strings.ReplaceAll(alert.Pattern, `\s+`, " ")
-
-				fmt.Printf("    %sPattern:%s  %s\n", Cyan, Reset, cleanPattern)
+				fmt.Printf("    %sPattern:%s  %s\n", Cyan, Reset, alert.Pattern)
 				fmt.Printf("    %sDescription:%s     %s\n", Cyan, Reset, alert.Description)
 				fmt.Printf("    %sExtra:%s    %s\n", Cyan, Reset, alert.ExtraInfo)
 			}
