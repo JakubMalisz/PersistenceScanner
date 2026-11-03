@@ -135,7 +135,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "(xxd\\s+-r|hexdump|od\\s+-)",
+    "indicator": "(xxd\\s+-r|hexdump|\\bod\\s+-)",
     "description": "Hexadecimal or binary dumping utility used to reconstruct obfuscated payloads.",
     "severity": "HIGH"
   },
@@ -155,7 +155,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "(\\$(env|attr|sysfs|kernel|number|devpath|id|driver|major|minor|result|parent|name|links|root|devnode)(\\{[^}]*\\})?|%E\\{[^}]+\\})",
+    "indicator": "eval\\s+(\\$env|%E)\\{",
     "description": "Udev macro substitution evasion attempt detected in extracted payload",
     "severity": "MEDIUM"
   }
