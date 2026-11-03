@@ -49,7 +49,6 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
 						Pattern:     command,
 						Description: rule.Description,
 						Severity:    rule.Severity,
-						ExtraInfo:   "",
 					}
 					fileAlerts = append(fileAlerts, commandAlert)
 				}

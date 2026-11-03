@@ -12,13 +12,18 @@ type UdevSpecs struct {
 }
 
 type UdevCommands struct {
-	Directive string
-	Command   string
+	Directive string `json:"directive,omitempty"`
+	Command   string `json:"command,omitempty"`
 }
 
 var runDirectiveRegex = regexp.MustCompile(`(IMPORT\{program\}|PROGRAM|RUN)\+?=\s*["']([^"']+)["']`)
 
 func Content(path string) (*UdevSpecs, error) {
+
+	if !strings.HasSuffix(path, ".rules") {
+		return &UdevSpecs{}, nil
+	}
+
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err

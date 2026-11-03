@@ -7,7 +7,7 @@ Modular, Go-based Blue Team utility designed to hunt for backdoors, rootkits, an
 Instead of relying on easily bypassed basic string matching, it uses a centralized, dynamic JSON Threat Intelligence feed and a pre-compiled Regular Expression engine. This allows it to effectively catch common attacker obfuscation techniques, such as hidden memory execution, absolute path overrides, and whitespace manipulation.
 
 * **Core Tech:** Go (Golang)
-* **Current Targets:** `/etc/systemd/`, `/etc/cron.*`, `/var/spool/cron/`, `/etc/pam.d/`, `/etc/update-motd.d/`
+* **Current Targets:** `/etc/systemd/`, `/etc/cron.*`, `/var/spool/cron/`, `/etc/pam.d/`, `/etc/update-motd.d/`, `/etc/udev/rules.d/`* 
 * **Key Advantage:** Plug-and-play architecture allowing seamless integration of new detection modules.
 
 ## Overview
@@ -81,6 +81,7 @@ The scanner is an open platform designed to easily integrate new attack vectors.
 * **Pluggable Authentication Modules (`pam`)**: Inspects `/etc/pam.d/` configurations to detect authentication bypass backdoors (e.g., `auth sufficient pam_permit.so`) and malicious external command hooks.
 * **Systemd Services (`systemd`)**: Scans service unit files across the system for embedded reverse shells, interactive interpreters, and unauthorized payload executions in directives like `ExecStart`.
 * **MOTD Files (`motd`)**: Monitors dynamic Message of the Day scripts for hidden network downloads (`curl`, `wget`) and shell piping.
+* **Udev Device Manager (`udev`)**: Analyzes `/etc/udev/rules.d/` device rules to detect stealth execution environments, backdoor injections triggered upon hardware events (`RUN`, `PROGRAM`), and environment variable evasion attempts via `IMPORT`.
 
 *(Additional modules are actively being developed and can be seamlessly integrated into the central `Analyzer` registry).*
 

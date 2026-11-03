@@ -153,5 +153,10 @@
     "indicator": "(/tmp|/dev/shm|/var/tmp|/run/user)/[a-zA-Z0-9._-]+",
     "description": "Direct execution of script or binary from non-standard temporary directories.",
     "severity": "HIGH"
+  },
+  {
+    "indicator": "(%[a-zA-Z]|\\$(env|attr|sysfs|kernel|number|devpath|id|driver|major|minor|result|parent|name|links|root|devnode))(\\{[^}]*\\})?",
+    "description": "Udev macro substitution evasion attempt detected in extracted payload",
+    "severity": "MEDIUM"
   }
 ]

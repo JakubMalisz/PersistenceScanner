@@ -3,7 +3,6 @@ package pam
 import (
 	"PersistenceScanner/internal/core"
 	"regexp"
-	"strings"
 )
 
 type Analyzer struct {
@@ -26,7 +25,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
 	var allAlerts []core.Alert
 
 	for _, entry := range entries {
-		line := "Type: " + entry.Type + " | Control: " + entry.Control + " | Module: " + entry.Module + " | Args: " + entry.Args
+		line := "Type: " + entry.Type + " | Control: " + entry.Control + " | Module: " + entry.Module
 
 		if entry.Args != "" {
 			line += " " + entry.Args
@@ -45,15 +44,6 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
 			}
 		}
 
-		if strings.HasPrefix(entry.Module, "/") && (strings.Contains(entry.Module, "/tmp") || strings.Contains(entry.Module, "/dev/shm")) {
-			pathAlert := core.Alert{
-				FilePath:    file.Path,
-				Pattern:     line,
-				Description: "Execution from suspicious directory (/tmp or /dev/shm)",
-				Severity:    "HIGH",
-			}
-			allAlerts = append(allAlerts, pathAlert)
-		}
 	}
 
 	return allAlerts, nil
