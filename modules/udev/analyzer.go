@@ -11,10 +11,10 @@ type Analyzer struct {
 
 func (a *Analyzer) GetPaths() []string {
 	return []string{
-		"/etc/udev/rules.d/*.rules",
-		"/run/udev/rules.d/*.rules",
-		"/lib/udev/rules.d/*.rules",
-		"/usr/lib/udev/rules.d/*.rules",
+		"/etc/udev/rules.d",
+		"/run/udev/rules.d",
+		"/lib/udev/rules.d",
+		"/usr/lib/udev/rules.d",
 	}
 }
 

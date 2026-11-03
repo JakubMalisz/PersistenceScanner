@@ -112,7 +112,7 @@ Scanner is actively being developed and updated. While current modules effective
 When a threat is identified, the engine constructs a standardized `core.Alert` structure, regardless of which module triggered it:
 
 * **FilePath**: Absolute path to the compromised configuration file or script.
-* **Pattern**: The specific Regex pattern that triggered the match.
+* **Pattern**: The specific IoC that triggered the match.
 * **Description**: Human-readable explanation of the threat vector.
 * **Severity**: Risk classification (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`).
 * **ExtraInfo**: Module-specific contextual metadata (e.g., Cron schedules, target users, or parsed PAM parameters).
