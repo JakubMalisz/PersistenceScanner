@@ -1,8 +1,8 @@
 package services
 
 import (
-
 	"PersistenceScanner/internal/core"
+	"path/filepath"
 	"regexp"
 )
 
@@ -10,21 +10,20 @@ type Analyzer struct {
 	Rules []core.DetectionRule
 }
 
-func (a *Analyzer) GetPaths() []string{
-	return []string{
-		"/etc/systemd/system",
-		"/lib/systemd/system",
-		"/usr/lib/systemd/system",
-		"/run/systemd/system",
-	} 
+func (a *Analyzer) GetPaths() []string {
+	var paths []string
+	base, _ := filepath.Glob("/etc/systemd/system/*.service")
+	paths = append(paths, base...)
+
+	dropIns, _ := filepath.Glob("/etc/systemd/system/*.service.d/*.conf")
+	paths = append(paths, dropIns...)
+
+	return paths
 }
 
-func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
+func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
 
-
-
-
-	getFieldValues := func(specs ServiceSpecs, fieldName string) []string{
+	getFieldValues := func(specs ServiceSpecs, fieldName string) []string {
 		switch fieldName {
 		case "ExecStart":
 			return specs.ExecStart
@@ -39,45 +38,41 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error){
 		}
 	}
 
-	
-
-	buildAlert := func(specs ServiceSpecs, fieldName string) ([]core.Alert, error){
+	buildAlert := func(specs ServiceSpecs, fieldName string) ([]core.Alert, error) {
 		var fileAlerts []core.Alert
-		for _, rule := range a.Rules{
+		for _, rule := range a.Rules {
 
-				commands := getFieldValues(specs, fieldName)
+			commands := getFieldValues(specs, fieldName)
 
-				for _, command := range commands{
-					match, err := regexp.MatchString(rule.Pattern, command)
-					if err == nil && match {
-						commandAlert := core.Alert{
-							FilePath:    file.Path, 
-							Pattern:     command,
-							Description: rule.Description,
-							Severity:    rule.Severity,
-							ExtraInfo: "",
-						}	
-						fileAlerts = append(fileAlerts, commandAlert)	
+			for _, command := range commands {
+				match, err := regexp.MatchString(rule.Pattern, command)
+				if err == nil && match {
+					commandAlert := core.Alert{
+						FilePath:    file.Path,
+						Pattern:     command,
+						Description: rule.Description,
+						Severity:    rule.Severity,
+						ExtraInfo:   "",
 					}
+					fileAlerts = append(fileAlerts, commandAlert)
 				}
 			}
-
-		return fileAlerts, nil		
 		}
-			
-	
+
+		return fileAlerts, nil
+	}
 
 	var allAlerts []core.Alert
 
 	specs, err := Content(file.Path)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 
 	fieldsToCheck := []string{"ExecStart", "ExecStartPre", "ExecStartPost", "EnvFiles"}
-	for _, field := range fieldsToCheck{
+	for _, field := range fieldsToCheck {
 		fieldAlerts, err := buildAlert(*specs, field)
-		if err != nil{
+		if err != nil {
 			return nil, err
 		}
 		allAlerts = append(allAlerts, fieldAlerts...)
