@@ -155,7 +155,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "(%[a-zA-Z]|\\$(env|attr|sysfs|kernel|number|devpath|id|driver|major|minor|result|parent|name|links|root|devnode))(\\{[^}]*\\})?",
+    "indicator": "(\\$(env|attr|sysfs|kernel|number|devpath|id|driver|major|minor|result|parent|name|links|root|devnode)(\\{[^}]*\\})?|%E\\{[^}]+\\})",
     "description": "Udev macro substitution evasion attempt detected in extracted payload",
     "severity": "MEDIUM"
   }
