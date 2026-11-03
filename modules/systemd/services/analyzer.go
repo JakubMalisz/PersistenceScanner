@@ -2,7 +2,6 @@ package services
 
 import (
 	"PersistenceScanner/internal/core"
-	"path/filepath"
 	"regexp"
 )
 
@@ -11,14 +10,12 @@ type Analyzer struct {
 }
 
 func (a *Analyzer) GetPaths() []string {
-	var paths []string
-	base, _ := filepath.Glob("/etc/systemd/system/*.service")
-	paths = append(paths, base...)
-
-	dropIns, _ := filepath.Glob("/etc/systemd/system/*.service.d/*.conf")
-	paths = append(paths, dropIns...)
-
-	return paths
+	return []string{
+		"/etc/systemd/system",
+		"/run/systemd/system",
+		"/lib/systemd/system",
+		"/usr/lib/systemd/system",
+	}
 }
 
 func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
