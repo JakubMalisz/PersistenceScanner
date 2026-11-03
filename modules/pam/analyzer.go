@@ -28,7 +28,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
 		line := "Type: " + entry.Type + " | Control: " + entry.Control + " | Module: " + entry.Module
 
 		if entry.Args != "" {
-			line += " " + entry.Args
+			line += " | Args: " + entry.Args
 		}
 
 		for _, rule := range a.Rules {
