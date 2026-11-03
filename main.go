@@ -30,7 +30,7 @@ func PickModule() string {
 		fmt.Printf("%s[2]%s Cron Scan\n", Yellow, Reset)
 		fmt.Printf("%s[3]%s Motd Files Scan\n", Yellow, Reset)
 		fmt.Printf("%s[4]%s PAM Modules Scan\n", Yellow, Reset)
-		fmt.Printf("%s[4]%s Udev Scan\n", Yellow, Reset)
+		fmt.Printf("%s[5]%s Udev Scan\n", Yellow, Reset)
 		fmt.Printf("%s[0]%s Exit\n", Red, Reset)
 
 		fmt.Printf("Pick scanning module: ")
