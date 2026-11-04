@@ -13,6 +13,7 @@ type ServiceSpecs struct {
 	ExecStartPost []string `json:"exec_start_post,omitempty"`
 	Restart       string   `json:"restart,omitempty"`
 	EnvFiles      []string `json:"environmental_files,omitempty"`
+	Environment   []string `json:"environment,omitempty"`
 }
 
 func Content(path string) (*ServiceSpecs, error) {
@@ -68,6 +69,8 @@ func Content(path string) (*ServiceSpecs, error) {
 			specs.Restart = value
 		case "EnvironmentFile":
 			specs.EnvFiles = append(specs.EnvFiles, value)
+		case "Environment":
+			specs.Environment = append(specs.Environment, value)
 		}
 
 	}

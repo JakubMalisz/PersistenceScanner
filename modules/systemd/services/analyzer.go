@@ -30,6 +30,8 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
 			return specs.ExecStartPost
 		case "EnvFiles":
 			return specs.EnvFiles
+		case "Environment":
+			return specs.Environment
 		default:
 			return nil
 		}
@@ -65,7 +67,7 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
 		return nil, err
 	}
 
-	fieldsToCheck := []string{"ExecStart", "ExecStartPre", "ExecStartPost", "EnvFiles"}
+	fieldsToCheck := []string{"ExecStart", "ExecStartPre", "ExecStartPost", "EnvFiles", "Environment"}
 	for _, field := range fieldsToCheck {
 		fieldAlerts, err := buildAlert(*specs, field)
 		if err != nil {
