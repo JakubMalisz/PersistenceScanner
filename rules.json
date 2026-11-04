@@ -15,7 +15,7 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "bash\\s+-i",
+    "indicator": "\\bbash\\s+-i",
     "description": "Interactive Bash shell initiation (potential reverse shell)",
     "severity": "CRITICAL"
   },
@@ -30,7 +30,7 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "socat\\s+exec:",
+    "indicator": "\\bsocat\\s+exec:",
     "description": "Socat execution relay attempt (Reverse shell or port forwarding)",
     "severity": "CRITICAL"
   },
@@ -50,7 +50,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "wget\\s+-[a-zA-Z]*q[a-zA-Z]*O-\\s+.*\\|\\s*(ba|z|k|da)?sh",
+    "indicator": "\\bwget\\s+-[a-zA-Z]*q[a-zA-Z]*O-\\s+.*\\|\\s*(ba|z|k|da)?sh",
     "description": "Quiet payload retrieval piped directly to standard shell execution",
     "severity": "CRITICAL"
   },
@@ -115,7 +115,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "auth\\s+.*pam_permit\\.so",
+    "indicator": "auth\\s+sufficient\\s+pam_permit\\.so",
     "description": "PAM authentication bypass backdoor (Unconditional access granted)",
     "severity": "CRITICAL"
   },
@@ -125,7 +125,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "base(64|32)\\s+(-d|--decode)\\s*\\|\\s*(ba|z|k|da)?sh",
+    "indicator": "\\bbase(64|32)\\s+(-d|--decode)\\s*\\|\\s*(ba|z|k|da)?sh",
     "description": "Base64/32 decoding invocation piped directly into a shell interpreter.",
     "severity": "CRITICAL"
   },
@@ -145,12 +145,12 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "rev\\s*\\|\\s*(ba|z|k|da)?sh",
+    "indicator": "\\brev\\s*\\|\\s*(ba|z|k|da)?sh",
     "description": "Reversed command string piped directly into a shell interpreter.",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "(python[23]?|perl|php|ruby|lua)\\s+-(c|e|r)\\s+[\"'].*(socket|subprocess|eval|exec|system)",
+    "indicator": "\\b(python[23]?|perl|php|ruby|lua)\\s+-(c|e|r)\\s+[\"'].*(socket|subprocess|eval|exec|system)",
     "description": "Inline script execution using alternative system interpreters.",
     "severity": "CRITICAL"
   },

