@@ -5,12 +5,12 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "nc\\s+-e",
+    "indicator": "\\bnc\\s+-e",
     "description": "Reverse shell attempt using netcat with execution flag",
     "severity": "CRITICAL"
   },
   {
-    "indicator": "ncat\\s+--exec",
+    "indicator": "\\bncat\\s+--exec",
     "description": "Reverse shell attempt using Ncat with execution flag",
     "severity": "CRITICAL"
   },
@@ -35,29 +35,34 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "curl\\s+-s",
-    "description": "Silent HTTP request via curl (Potential fileless payload download)",
+    "indicator": "\\bcurl\\s+.*\\|\\s*(ba|z|k|da)?sh",
+    "description": "Silent HTTP request via curl piped directly to a shell (Fileless payload execution)",
+    "severity": "CRITICAL"
+  },
+  {
+    "indicator": "\\bcurl\\s+.*-(k|-insecure)",
+    "description": "HTTP request via curl with SSL/TLS verification disabled (Potential malicious download)",
     "severity": "HIGH"
   },
   {
-    "indicator": "wget\\s+-qO-",
-    "description": "Quiet payload retrieval piped to standard output",
+    "indicator": "\\bcurl\\s+.*(-o|-O)\\s+(/tmp/|/dev/shm/|/var/tmp/)",
+    "description": "Downloading file via curl directly to a writable temporary directory",
     "severity": "HIGH"
   },
   {
-    "indicator": "\\|\\s*sh",
-    "description": "Piping raw remote stream directly into standard shell execution",
-    "severity": "HIGH"
+    "indicator": "wget\\s+-[a-zA-Z]*q[a-zA-Z]*O-\\s+.*\\|\\s*(ba|z|k|da)?sh",
+    "description": "Quiet payload retrieval piped directly to standard shell execution",
+    "severity": "CRITICAL"
   },
   {
-    "indicator": "\\|\\s*bash",
-    "description": "Piping raw remote stream directly into Bash shell execution",
-    "severity": "HIGH"
+    "indicator": "\\|\\s*(ba|z|k|da)?sh",
+    "description": "Piping raw remote stream directly into shell execution",
+    "severity": "LOW"
   },
   {
     "indicator": "\\|\\s*python",
     "description": "Piping raw remote stream directly into Python interpreter",
-    "severity": "HIGH"
+    "severity": "LOW"
   },
   {
     "indicator": "/dev/mqueue",
@@ -105,12 +110,12 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "nohup",
-    "description": "Process detachment from terminal session (Background persistence execution)",
-    "severity": "LOW"
+    "indicator": "nohup\\s+((/tmp|/dev/shm)/|nc|bash\\s+-i|curl|wget)",
+    "description": "Process detachment from terminal session executing suspicious tools or paths",
+    "severity": "HIGH"
   },
   {
-    "indicator": "auth\\s+sufficient\\s+pam_permit\\.so",
+    "indicator": "auth\\s+.*pam_permit\\.so",
     "description": "PAM authentication bypass backdoor (Unconditional access granted)",
     "severity": "CRITICAL"
   },
@@ -120,12 +125,12 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "base64\\s+(-d|--decode)",
-    "description": "Base64 decoding invocation, often used to conceal malicious commands.",
-    "severity": "HIGH"
+    "indicator": "base(64|32)\\s+(-d|--decode)\\s*\\|\\s*(ba|z|k|da)?sh",
+    "description": "Base64/32 decoding invocation piped directly into a shell interpreter.",
+    "severity": "CRITICAL"
   },
   {
-    "indicator": "echo\\s+[A-Za-z0-9+/=]{12,}\\s*\\|\\s*(ba)?sh",
+    "indicator": "echo\\s+[A-Za-z0-9+/=]{12,}\\s*\\|\\s*(ba|z|k|da)?sh",
     "description": "Base64 encoded string piped directly into a shell interpreter.",
     "severity": "CRITICAL"
   },
@@ -140,7 +145,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "rev\\s*\\|\\s*(ba)?sh",
+    "indicator": "rev\\s*\\|\\s*(ba|z|k|da)?sh",
     "description": "Reversed command string piped directly into a shell interpreter.",
     "severity": "CRITICAL"
   },
@@ -150,8 +155,8 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "(/tmp|/dev/shm|/var/tmp|/run/user)/[a-zA-Z0-9._-]+",
-    "description": "Direct execution of script or binary from non-standard temporary directories.",
+    "indicator": "(/tmp|/dev/shm|/var/tmp|/run/user)/\\.[a-zA-Z0-9_-]+",
+    "description": "Direct execution of hidden script or binary from non-standard temporary directories.",
     "severity": "HIGH"
   },
   {
