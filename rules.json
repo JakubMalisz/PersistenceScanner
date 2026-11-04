@@ -158,5 +158,15 @@
     "indicator": "eval\\s+(\\$env|%E)\\{",
     "description": "Udev macro substitution evasion attempt detected in extracted payload",
     "severity": "MEDIUM"
+  },
+  {
+    "indicator": "\\|\\s*at\\s+(now|[0-9:a-zA-Z+]+)",
+    "description": "Scheduling one-off tasks via 'at' daemon to break process tree visibility",
+    "severity": "MEDIUM"
+  },
+  {
+    "indicator": "(dbus-send|busctl)\\s+.*org\\.freedesktop\\.systemd1",
+    "description": "D-Bus messaging used to secretly trigger systemd daemon actions",
+    "severity": "HIGH"
   }
 ]
