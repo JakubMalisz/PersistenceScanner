@@ -83,15 +83,17 @@ The scanner is an open platform designed to easily integrate new attack vectors.
 
 * **Cron Persistence (`cron`)**: Analyzes system crontabs, user spools, and periodic execution directories (`cron.daily`, etc.) for unauthorized background tasks, `@reboot` directives, and environment variable injections (e.g., `LD_PRELOAD`).
 * **Pluggable Authentication Modules (`pam`)**: Inspects `/etc/pam.d/` configurations to detect authentication bypass backdoors (e.g., `auth sufficient pam_permit.so`) and malicious external command hooks.
-* **Systemd Services (`systemd`)**: Scans service unit files across the system for embedded reverse shells, interactive interpreters, and unauthorized payload executions in directives like `ExecStart`.
-* **MOTD Files (`motd`)**: Monitors dynamic Message of the Day scripts for hidden network downloads (`curl`, `wget`) and shell piping.
-* **Udev Device Manager (`udev`)**: Analyzes `/etc/udev/rules.d/` device rules to detect stealth execution environments, backdoor injections triggered upon hardware events (`RUN`, `PROGRAM`), and environment variable evasion attempts via `IMPORT`.
+* **Systemd Services (`systemd`)**: Scans service unit files across the system for embedded reverse shells, interactive interpreters, and unauthorized payload executions in directives.
+* **MOTD Files (`motd`)**: Monitors dynamic Message of the Day scripts for hidden network downloads, bypassed SSL verifications (`curl -k`), fileless payload execution, and direct shell piping.
+* **Udev Device Manager (`udev`)**:  Analyzes device rules to detect unauthorized executions triggered by hardware events and environment variable (`ENV`) evasion attempts.
 
 *(Additional modules are actively being developed and can be seamlessly integrated into the central `Analyzer` registry).*
 
 ## ⚠️ Disclaimer & Ongoing Development
 
 Scanner is actively being developed and updated. While current modules effectively detect standard persistence techniques and common obfuscation patterns, they may not cover every advanced obfuscation method. Parsing logic and detection rules are continuously being refined and expanded.
+
+**Note on False Positives (FPs):** The tool is designed with a strong focus on high-fidelity detection (True Positives), utilizing context-aware rules (e.g., verifying if a downloaded string is actually piped to a shell). However, highly customized administrative scripts, legitimate use of raw shell pipes during system updates, or complex background tasks may occasionally trigger `LOW` or `MEDIUM` severity alerts. Always verify critical alerts against your specific environment baseline.
 
 ## Installation & Execution
 
@@ -124,7 +126,7 @@ When a threat is identified, the engine constructs a standardized `core.Alert` s
 
 ## Testing & Proof of Concept (PoC)
 
-To verify the detection capabilities of each module against various persistence and evasion vectors, refer to the comprehensive [TESTING.md](TESTING.md) PoC document.
+To verify the detection capabilities of each module against various persistence and evasion vectors, refer to the [TESTING.md](TESTING.md) document.
 
 ## Acknowledgments & Sources (Pattern Authors): 
 The database was generated and optimized based on public infosec community research and recognized open-source projects. Malicious behavior signatures draw directly from:

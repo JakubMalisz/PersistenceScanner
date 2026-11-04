@@ -1,10 +1,5 @@
 [
   {
-    "indicator": "@reboot",
-    "description": "Non-standard schedule directive: Executes payload automatically on system startup",
-    "severity": "HIGH"
-  },
-  {
     "indicator": "\\bnc\\s+-e",
     "description": "Reverse shell attempt using netcat with execution flag",
     "severity": "CRITICAL"
@@ -173,5 +168,10 @@
     "indicator": "(dbus-send|busctl)\\s+.*org\\.freedesktop\\.systemd1",
     "description": "D-Bus messaging used to secretly trigger systemd daemon actions",
     "severity": "HIGH"
+  },
+  {
+    "indicator": "@reboot",
+    "description": "Non-standard schedule directive: Executes payload automatically on system startup",
+    "severity": "LOW"
   }
 ]
