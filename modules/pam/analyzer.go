@@ -25,10 +25,10 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
 	var allAlerts []core.Alert
 
 	for _, entry := range entries {
-		line := "Type: " + entry.Type + " | Control: " + entry.Control + " | Module: " + entry.Module
+		line := entry.Type + " " + entry.Control + " " + entry.Module
 
 		if entry.Args != "" {
-			line += " | Args: " + entry.Args
+			line += " " + entry.Args
 		}
 
 		for _, rule := range a.Rules {
