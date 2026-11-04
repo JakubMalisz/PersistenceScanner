@@ -1,5 +1,9 @@
 # Linux Persistence Scanner
 
+[![Language: Go](https://img.shields.io/badge/Language-Go-00ADD8.svg)](https://go.dev/)
+[![Platform: Linux](https://img.shields.io/badge/Platform-Linux-FCC624.svg)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 ## TL;DR
 
 Modular, Go-based Blue Team utility designed to hunt for backdoors, rootkits, and persistence mechanisms across Linux environments. 
