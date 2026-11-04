@@ -107,7 +107,3 @@ To ensure the codebase remains clean and maintainable:
 5. A maintainer will review your code, discuss potential improvements, and merge it.
 
 ---
-
-## Code of Conduct
-
-Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms. Be respectful, constructive, and collaborative in all issues and PRs.
