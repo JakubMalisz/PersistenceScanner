@@ -16,7 +16,7 @@ type UdevCommands struct {
 	Command   string `json:"command,omitempty"`
 }
 
-var runDirectiveRegex = regexp.MustCompile(`(IMPORT\{program\}|PROGRAM|RUN)\+?=\s*(?:"([^"]*)"|'([^']*)')`)
+var runDirectiveRegex = regexp.MustCompile(`(IMPORT\{[^}]+\}|PROGRAM|RUN|ENV\{[^}]+\})\+?=\s*(?:"([^"]*)"|'([^']*)')`)
 
 func Content(path string) (*UdevSpecs, error) {
 

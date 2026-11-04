@@ -3,6 +3,7 @@ package udev
 import (
 	"PersistenceScanner/internal/core"
 	"regexp"
+	"strings"
 )
 
 type Analyzer struct {
@@ -27,13 +28,15 @@ func (a *Analyzer) Analyze(file *core.FileData) ([]core.Alert, error) {
 	var allAlerts []core.Alert
 	for _, entry := range specs.Commands {
 		var extraInfo string
-		switch entry.Directive {
-		case "RUN":
+		switch {
+		case entry.Directive == "RUN":
 			extraInfo = "Udev Persistence via Direct Action Directive (RUN)"
-		case "PROGRAM":
+		case entry.Directive == "PROGRAM":
 			extraInfo = "Udev Stealth Execution via Condition Evaluation (PROGRAM)"
-		case "IMPORT{program}":
-			extraInfo = "Udev Evasion Technique via Environment Import Directive (IMPORT)"
+		case strings.HasPrefix(entry.Directive, "IMPORT"):
+			extraInfo = "Udev Evasion Technique via Environment Import Directive (" + entry.Directive + ")"
+		case strings.HasPrefix(entry.Directive, "ENV{"):
+			extraInfo = "Udev Macro Evasion via Environment Variable (" + entry.Directive + ")"
 		default:
 			extraInfo = "Udev Execution via " + entry.Directive
 		}
