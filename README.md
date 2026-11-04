@@ -120,7 +120,7 @@ When a threat is identified, the engine constructs a standardized `core.Alert` s
 * **Pattern**: The specific IoC that triggered the match.
 * **Description**: Human-readable explanation of the threat vector.
 * **Severity**: Risk classification (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`).
-* **ExtraInfo**: Module-specific contextual metadata (e.g., Cron schedules, target users, or parsed PAM parameters).
+* **ExtraInfo**: Module-specific contextual metadata (e.g., Cron schedules, target users).
 
 ## Testing & Proof of Concept (PoC)
 
