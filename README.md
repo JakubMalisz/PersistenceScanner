@@ -122,6 +122,10 @@ When a threat is identified, the engine constructs a standardized `core.Alert` s
 * **Severity**: Risk classification (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`).
 * **ExtraInfo**: Module-specific contextual metadata (e.g., Cron schedules, target users, or parsed PAM parameters).
 
+## Testing & Proof of Concept (PoC)
+
+To verify the detection capabilities of each module against various persistence and evasion vectors, refer to the comprehensive [TESTING.md](TESTING.md) PoC document.
+
 ## Acknowledgments & Sources (Pattern Authors): 
 The database was generated and optimized based on public infosec community research and recognized open-source projects. Malicious behavior signatures draw directly from:
 
