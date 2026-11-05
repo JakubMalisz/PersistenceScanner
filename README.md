@@ -84,7 +84,7 @@ The scanner is an open platform designed to easily integrate new attack vectors.
 * **Cron Persistence (`cron`)**: Analyzes system crontabs, user spools, and periodic execution directories (`cron.daily`, etc.) for unauthorized background tasks, `@reboot` directives, and environment variable injections (e.g., `LD_PRELOAD`).
 * **Pluggable Authentication Modules (`pam`)**: Inspects `/etc/pam.d/` configurations to detect authentication bypass backdoors (e.g., `auth sufficient pam_permit.so`) and malicious external command hooks.
 * **Systemd Services (`systemd`)**: Scans service unit files across the system for embedded reverse shells, interactive interpreters, and unauthorized payload executions in directives.
-* **MOTD Files (`motd`)**: Monitors dynamic Message of the Day scripts for hidden network downloads, bypassed SSL verifications (`curl -k`), fileless payload execution, and direct shell piping.
+* **MOTD Files (`motd`)**: Monitors dynamic Message of the Day scripts for unauthorized command execution and hidden network activity triggered upon user login.
 * **Udev Device Manager (`udev`)**:  Analyzes device rules to detect unauthorized executions triggered by hardware events and environment variable (`ENV`) evasion attempts.
 
 *(Additional modules are actively being developed and can be seamlessly integrated into the central `Analyzer` registry).*
