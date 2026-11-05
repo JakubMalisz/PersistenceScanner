@@ -93,7 +93,7 @@ The scanner is an open platform designed to easily integrate new attack vectors.
 
 Scanner is actively being developed and updated. While current modules effectively detect standard persistence techniques and common obfuscation patterns, they may not cover every advanced obfuscation method. Parsing logic and detection rules are continuously being refined and expanded.
 
-**Note on False Positives (FPs):** The tool is designed with a strong focus on high-fidelity detection (True Positives), utilizing context-aware rules (e.g., verifying if a downloaded string is actually piped to a shell). However, highly customized administrative scripts, legitimate use of raw shell pipes during system updates, or complex background tasks may occasionally trigger `LOW` or `MEDIUM` severity alerts. Always verify critical alerts against your specific environment baseline.
+**Note on False Positives (FPs):** Because the tool relies on regex-based analysis of system configurations, False Positives (FPs) may occasionally occur. Highly customized administrative scripts or legitimate system updates might use structures that overlap with threat signatures. Analysts are always advised to manually verify the context of flagged alerts.
 
 ## Installation & Execution
 
