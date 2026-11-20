@@ -74,7 +74,7 @@ graph TD
 ### 4. Advanced Pattern Matching (Module Level)
 
 * **Regex-Powered Detection**: Analysis modules do not rely on basic substring matching. They evaluate configurations and scripts against pre-compiled regular expressions (`regexp.MatchString`) provided by the JSON feed.
-* **Bypass Mitigation**: The combination of data normalization during the parsing phase (e.g., using `strings.Fields`) and robust Regex patterns (e.g., `\s+`) successfully thwarts obfuscation techniques like multiple spaces, tabs, and absolute binary path overrides (e.g., detecting `/usr/bin/nc` exactly like `nc`).
+* **Bypass Mitigation**: The combination of data normalization during the parsing phase (e.g., using `strings.Fields`) and robust Regex patterns successfully thwarts obfuscation techniques like multiple spaces, tabs, and absolute binary path overrides (e.g., detecting `/usr/bin/nc` exactly like `nc`).
 
 ## Built-in Analysis Modules
 
