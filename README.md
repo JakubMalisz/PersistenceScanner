@@ -11,7 +11,6 @@ Modular, Go-based Blue Team utility designed to hunt for backdoors, rootkits, an
 Instead of relying on easily bypassed basic string matching, it uses a centralized, dynamic JSON Threat Intelligence feed and a pre-compiled Regular Expression engine. This allows it to effectively catch common attacker obfuscation techniques, such as hidden memory execution, absolute path overrides, and whitespace manipulation.
 
 * **Core Tech:** Go (Golang)
-* **Current Targets:** `/etc/systemd/`, `/etc/cron.*`, `/var/spool/cron/`, `/etc/pam.d/`, `/etc/update-motd.d/`, `/etc/udev/rules.d/`* 
 * **Key Advantage:** Plug-and-play architecture allowing seamless integration of new detection modules.
 
 ## Overview
