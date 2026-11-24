@@ -25,32 +25,32 @@ The flowchart below illustrates the data flow within the application, from start
 
 ```mermaid
 graph TD
-    A[User CLI: ./pscanner] -->|Module Selection| B(main.go: Orchestrator)
-    
+    A["User CLI:<br/>./pscanner"] -->|Module Selection| B("main.go:<br/>Orchestrator")
+
     subgraph "Threat Intelligence"
-    B -->|1. Fetches rules.json| C[internal/feed]
-    C -->|HTTP Request| D[(Remote GitHub Repository)]
+    B -->|1. Fetches rules.json| C["internal/feed"]
+    C -->|HTTP Request| D[("Remote GitHub<br/>Repository")]
     D -->|Returns JSON file| C
     C -->|Passes rule structures| B
     end
 
-    B -->|2. Initializes chosen module| E{Selected Analyzer e.g., Cron, PAM}
-    
+    B -->|2. Initializes chosen module| E{"Selected Analyzer<br/>(e.g., Cron, PAM)"}
+
     subgraph "Concurrent Engine (Goroutines & Channels)"
-    E -->|3. Passes target paths| F[internal/scanner]
-    F -->|Scans system files| G[Linux Directories e.g., /etc/cron.d]
+    E -->|3. Passes target paths| F["internal/scanner"]
+    F -->|Scans system files| G["Linux Directories<br/>(e.g., /etc/cron.d)"]
     G -->|Streams data asynchronously| F
     F -->|Passes 'FileData' via Go Channel| E
     end
-    
+
     subgraph "Analysis and Detection"
-    E -->|4. Parsing & Regex Match| H{Match found?}
-    H -->|Yes| I[Generate core.Alert structure]
-    H -->|No| J[Skip file]
+    E -->|4. Parsing & Regex Match| H{"Match found?"}
+    H -->|Yes| I["Generate core.Alert<br/>structure"]
+    H -->|No| J["Skip file"]
     end
 
     I -->|5. Returns alerts| B
-    B -->|6. Displays summary| K[User Screen]
+    B -->|6. Displays summary| K["User Screen"]
 ```
 
 ## Core Components
