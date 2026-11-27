@@ -58,16 +58,31 @@ Block unauthorized outbound connections to prevent reverse shells, mining pool t
 > **Security Disclaimer (Port 80/443 Tunneling):** Allowing unrestricted outbound traffic on ports `80` and `443` (`0.0.0.0/0`) only blocks non-standard C2 ports (e.g., `4444`, `1337`, `3333`). An attacker can still establish a raw TCP reverse shell or HTTP/HTTPS tunnel (e.g., via `chisel` or `socat`) to an external server listening on port `443`. In production environments, restrict outbound `80/443` and `53` traffic strictly to trusted destination IPs (such as internal package mirrors, DNS resolvers, or an inspecting HTTP proxy).
 
 ```bash
-# Example iptables egress policy (restrict DNS and HTTP/HTTPS to trusted destinations - IPv4)
+# --- Option A: iptables ---
+
+# Keep existing connections alive (prevents locking yourself out during remote configuration)
 sudo iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
 sudo iptables -A OUTPUT -o lo -j ACCEPT
 sudo iptables -A OUTPUT -p udp -d <TRUSTED_DNS_IP> --dport 53 -j ACCEPT
 sudo iptables -A OUTPUT -p tcp -d <TRUSTED_DNS_IP> --dport 53 -j ACCEPT
-sudo iptables -A OUTPUT -p tcp -d <TRUSTED_MIRROR_OR_PROXY_IP> -m multiport --dports 80,443 -j ACCEPT
+sudo iptables -A OUTPUT -p tcp -d <TRUSTED_IP> -m multiport --dports 80,443 -j ACCEPT
 sudo iptables -P OUTPUT DROP
+
+# --- Option B: nftables ---
+sudo nft add table inet filter
+sudo nft add chain inet filter output { type filter hook output priority 0 \; policy drop \; }
+
+# Keep existing connections alive (prevents locking yourself out during remote configuration)
+sudo nft add rule inet filter output ct state established,related accept
+
+sudo nft add rule inet filter output oif "lo" accept
+sudo nft add rule inet filter output ip daddr <TRUSTED_DNS_IP> udp dport 53 accept
+sudo nft add rule inet filter output ip daddr <TRUSTED_DNS_IP> tcp dport 53 accept
+sudo nft add rule inet filter output ip daddr <TRUSTED_IP> tcp dport { 80, 443 } accept
 ```
 
-Note: Rules added via iptables are stored in memory and will be lost upon reboot unless saved explicitly (e.g., via sudo netfilter-persistent save on Debian/Ubuntu or sudo service iptables save on RHEL/Rocky).
+Note: Firewall rules added via CLI are stored in memory and will be lost upon reboot unless saved explicitly (e.g., via `sudo netfilter-persistent save` for `iptables` or `sudo nft list ruleset | sudo tee /etc/nftables.conf` for `nftables`)
 
 ### Remove High-Risk Network Tools & Restrict Binary Reconstruction Utilities
 Remove unnecessary relay tools and restrict access to hex/binary dumping utilities used to reconstruct obfuscated payloads:
