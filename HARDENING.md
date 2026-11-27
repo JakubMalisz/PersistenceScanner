@@ -51,18 +51,23 @@ sudo auditctl -a always,exit -F arch=b64 -S ioctl -F a1=0x40086602 -k file_attr_
 
 *Mitigates: Reverse shells (`nc -e`, `ncat`, `socat`, `bash -i`, `/dev/tcp/`, `/dev/udp/`), fileless piping (`curl/wget | sh`), inline interpreters (`python -c`, `perl -e`, `php -r`, `ruby -e`, `lua -e`), obfuscation & binary reconstruction (`base64/32`, `rev`, `printf \x..`, `xxd -r`, `hexdump`, `od`), and crypto-mining (`xmrig`, `stratum+tcp://`).*
 
-### Enforce Strict Egress Firewall Rules (`nftables`)
-Block unauthorized outbound connections to prevent reverse shells, mining pool traffic, and unapproved payload downloads (including `curl -k`):
+### Enforce Strict Egress Firewall Rules (iptables / ip6tables)
+
+Block unauthorized outbound connections to prevent reverse shells, mining pool traffic, and unapproved payload downloads (including `curl -k`). Always append the `ACCEPT` rules **before** switching the default `OUTPUT` policy to `DROP` to avoid breaking active connections.
+
+> **Security Disclaimer (Port 80/443 Tunneling):** Allowing unrestricted outbound traffic on ports `80` and `443` (`0.0.0.0/0`) only blocks non-standard C2 ports (e.g., `4444`, `1337`, `3333`). An attacker can still establish a raw TCP reverse shell or HTTP/HTTPS tunnel (e.g., via `chisel` or `socat`) to an external server listening on port `443`. In production environments, restrict outbound `80/443` and `53` traffic strictly to trusted destination IPs (such as internal package mirrors, DNS resolvers, or an inspecting HTTP proxy).
 
 ```bash
-# Example nftables egress policy (allow DNS, HTTP/HTTPS only)
-sudo nft add table inet filter
-sudo nft add chain inet filter output { type filter hook output priority 0 \; policy drop \; }
-sudo nft add rule inet filter output ct state established,related accept
-sudo nft add rule inet filter output oif "lo" accept
-sudo nft add rule inet filter output udp dport 53 accept
-sudo nft add rule inet filter output tcp dport { 53, 80, 443 } accept
+# Example iptables egress policy (restrict DNS and HTTP/HTTPS to trusted destinations - IPv4)
+sudo iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A OUTPUT -o lo -j ACCEPT
+sudo iptables -A OUTPUT -p udp -d <TRUSTED_DNS_IP> --dport 53 -j ACCEPT
+sudo iptables -A OUTPUT -p tcp -d <TRUSTED_DNS_IP> --dport 53 -j ACCEPT
+sudo iptables -A OUTPUT -p tcp -d <TRUSTED_MIRROR_OR_PROXY_IP> -m multiport --dports 80,443 -j ACCEPT
+sudo iptables -P OUTPUT DROP
 ```
+
+Note: Rules added via iptables are stored in memory and will be lost upon reboot unless saved explicitly (e.g., via sudo netfilter-persistent save on Debian/Ubuntu or sudo service iptables save on RHEL/Rocky).
 
 ### Remove High-Risk Network Tools & Restrict Binary Reconstruction Utilities
 Remove unnecessary relay tools and restrict access to hex/binary dumping utilities used to reconstruct obfuscated payloads:
