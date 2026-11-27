@@ -120,7 +120,7 @@ When a threat is identified, the engine constructs a standardized `core.Alert` s
 
 * **FilePath**: Absolute path to the compromised configuration file or script.
 * **Pattern**: The specific IoC that triggered the match.
-* **Description**: Human-readable explanation of the threat vector.
+* **Description**: Explanation of the threat vector.
 * **Severity**: Risk classification (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`).
 * **ExtraInfo**: Module-specific contextual metadata (e.g., Cron schedules, target users).
 
