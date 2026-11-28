@@ -128,10 +128,6 @@ When a threat is identified, the engine constructs a standardized `core.Alert` s
 
 To verify the detection capabilities of each module against various persistence and evasion vectors, refer to the [TESTING.md](TESTING.md) document.
 
-## Hardening & Remediation
-
-For actionable system hardening procedures, defensive configurations, and remediation commands mapped directly to all detection rules in `rules.json`, see the [HARDENING.md](HARDENING.md) guide.
-
 ## Acknowledgments & Sources (Pattern Authors): 
 The database was generated and optimized based on public infosec community research and recognized open-source projects. Malicious behavior signatures draw directly from:
 
