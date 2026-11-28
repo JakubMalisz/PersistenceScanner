@@ -72,9 +72,9 @@ ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth0", RUN+="/bin/sh -c 'echo \"python
 
 ### PoC 2.1: Systemd Environment Injection & Encoded Evasion
 
-**Vector:** Attackers utilize the `Environment=` directive to silently inject a userland rootkit library (`LD_PRELOAD`) that is inherited by child processes spawned via `ExecStart=`, cloaking the obfuscated Base64 reverse shell from standard process and network inspection tools while splitting malicious indicators across separate unit directives.
+**Vector:** Rather than executing suspicious shell commands directly via `ExecStart=`, attackers use the `Environment=` directive to inject a malicious shared library (`LD_PRELOAD`) into a clean, legitimate system daemon (`/usr/sbin/sshd`). When `systemd` starts the unit, the dynamic linker maps the hidden library into the daemon's address space, enabling function hooking (e.g., authentication bypass) while keeping `ExecStart=` completely benign.
 
-**Simulated File:** `backdoor.service`
+**Simulated File:** `test.service`
 
 ```
 [Unit]
