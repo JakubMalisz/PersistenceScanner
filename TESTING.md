@@ -64,7 +64,7 @@ ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth0", RUN+="/bin/sh -c 'echo \"python
 
 **PoC Evidence:**
 
-[![Udev Python Detection](assets/test-udev-net.png)](assets/test-udev-net.png)
+[![Udev Python Detection](assets/test-udev-at.png)](assets/test-udev-at.png)
 
 ---
 
