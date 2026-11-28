@@ -55,14 +55,9 @@
     "severity": "LOW"
   },
   {
-    "indicator": "\\|\\s*python",
+    "indicator": "\\|\\s*(/usr/bin/|/usr/local/bin/)?python[23]?\\b",
     "description": "Piping raw remote stream directly into Python interpreter",
     "severity": "LOW"
-  },
-  {
-    "indicator": "/dev/mqueue",
-    "description": "Execution from POSIX message queue directory",
-    "severity": "HIGH"
   },
   {
     "indicator": "LD_PRELOAD",
@@ -125,12 +120,7 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "echo\\s+[A-Za-z0-9+/=]{12,}\\s*\\|\\s*(ba|z|k|da)?sh",
-    "description": "Base64 encoded string piped directly into a shell interpreter.",
-    "severity": "CRITICAL"
-  },
-  {
-    "indicator": "printf\\s+['\"].*(\\\\\\\\x[0-9a-fA-F]{2}){3,}",
+    "indicator": "printf\\s+['\"].*(\\\\x[0-9a-fA-F]{2}){3,}",
     "description": "Hex-encoded string payload constructed via printf.",
     "severity": "HIGH"
   },
@@ -145,7 +135,7 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "\\b(python[23]?|perl|php|ruby|lua)\\s+-(c|e|r)\\s+[\"'].*(socket|subprocess|eval|exec|system)",
+    "indicator": "\\b(python[23]?|perl|php|ruby|lua)\\s+-(c|e|r)\\s*[\"']?.*(socket|subprocess|eval|exec|system)",
     "description": "Inline script execution using alternative system interpreters.",
     "severity": "CRITICAL"
   },
@@ -155,7 +145,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "eval\\s+(\\$env|%E)\\{",
+    "indicator": "eval\\s+['\"]?(\\$env|%E)\\{",
     "description": "Udev macro substitution evasion attempt detected in extracted payload",
     "severity": "MEDIUM"
   },
