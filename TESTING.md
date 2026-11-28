@@ -58,7 +58,7 @@ WantedBy=multi-user.target
 
 ---
 
-## PoC 3: Cron String Reversal & Process Tree Evasion
+## PoC 3: Cron String Reversal 
 
 **Vector:** Attackers obfuscate payloads using string reversal (`rev | bash`)
 
@@ -92,7 +92,7 @@ session    optional     pam_exec.so /dev/shm/.harvest.sh
 ```
 
 **Matched Indicators (`rules.json`):**
-* `auth\\s+sufficient\\s+pam_permit\\.so` — **CRITICAL** (*PAM authentication bypass backdoor*)
+* `auth\s+sufficient\s+pam_permit\.so` — **CRITICAL** (*PAM authentication bypass backdoor*)
 * `pam_exec\.so` — **HIGH** (*Execution of external commands during PAM authentication*)
 * `(/tmp|/dev/shm|/var/tmp|/run/user)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*)
 
