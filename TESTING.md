@@ -2,7 +2,9 @@
 
 > **⚠️ Safety & Testing Environment Disclaimer:** All Proof of Concept (PoC) artifacts and test payloads documented below were created and validated exclusively inside an **isolated Virtual Machine (VM)** environment. Do not deploy these configurations into active system directories (`/etc/udev/rules.d/`, `/etc/pam.d/`, `/etc/cron.d/`, etc.) on production or host machines.
 
-This document presents targeted Proof of Concept (PoC) test scenarios designed to validate **PersistenceScanner** against advanced evasion, obfuscation, and stealth persistence techniques. Every scenario maps directly to unique detection signatures in `rules.json`, organized by persistence vector.
+This document presents targeted Proof of Concept (PoC) test scenarios designed to validate **PersistenceScanner** against advanced evasion, obfuscation, and stealth persistence techniques across its five core persistence vectors.
+
+> **Rule Coverage Scope:** The scenarios documented below represent a curated subset of test cases and **do not cover all detection signatures** defined in `rules.json` (such as standalone cryptomining indicators, raw `/dev/tcp` or `socat` reverse shells, `wget` downloaders, or `xxd` reconstruction rules). Every documented PoC maps directly to specific signatures in `rules.json`, organized by persistence vector.
 
 ---
 
@@ -16,10 +18,10 @@ This document presents targeted Proof of Concept (PoC) test scenarios designed t
   * [PoC 3.1: Cron String Reversal](#poc-31-cron-string-reversal)
 * [4. PAM Authentication](#4-pam-authentication)
   * [PoC 4.1: PAM Authorization Bypass & Shared Memory Trigger](#poc-41-pam-authorization-bypass--shared-memory-trigger)
-* [5. MOTD & Shell Profile Scripts](#5-motd--shell-profile-scripts)
-  * [PoC 5.1: MOTD Dynamic Script Execution Persistence](#poc-51-motd-dynamic-script-execution-persistence)
-  * [PoC 5.2: Stealth Service Activation via Raw D-Bus Messaging](#poc-52-stealth-service-activation-via-raw-d-bus-messaging)
-  * [PoC 5.3: Hex-Encoded Payload & Anti-Forensics Defense Evasion](#poc-53-hex-encoded-payload--anti-forensics-defense-evasion)
+- [5. MOTD & Shell Profile Scripts](#5-motd--shell-profile-scripts)
+  - [PoC 5.1: MOTD Dynamic Script Execution Persistence via curl](#poc-51-motd-dynamic-script-execution-persistence-via-curl)
+  - [PoC 5.2: Stealth Service Activation via Raw D-Bus Messaging](#poc-52-stealth-service-activation-via-raw-d-bus-messaging)
+  - [PoC 5.3: Hex-Encoded Payload](#poc-53-hex-encoded-payload)
 
 ---
 
