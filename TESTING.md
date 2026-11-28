@@ -13,7 +13,7 @@ This document presents targeted Proof of Concept (PoC) test scenarios designed t
   * [PoC 1.1: Udev Macro Substitution Evasion & Process Tree Detachment](#poc-11-udev-macro-substitution-evasion--process-tree-detachment)
   * [PoC 1.2: Udev Process Tree Detachment & Inline Python Reverse Shell](#poc-12-udev-process-tree-detachment--inline-python-reverse-shell)
 * [2. Systemd Services](#2-systemd-services)
-  * [PoC 2.1: Systemd Environment Injection & Encoded Evasion](#poc-21-systemd-environment-injection--encoded-evasion)
+  - [PoC 2.1: Systemd LD_PRELOAD Injection into Legitimate Service](#poc-21-systemd-ld_preload-injection-into-legitimate-service)
 * [3. Cron Jobs](#3-cron-jobs)
   * [PoC 3.1: Cron String Reversal](#poc-31-cron-string-reversal)
 * [4. PAM Authentication](#4-pam-authentication)
@@ -70,7 +70,7 @@ ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth0", RUN+="/bin/sh -c 'echo \"python
 
 ## 2. Systemd Services
 
-### PoC 2.1: Systemd Environment Injection & Encoded Evasion
+### PoC 2.1: Systemd Environment Injection
 
 **Vector:** Rather than executing suspicious shell commands directly via `ExecStart=`, attackers use the `Environment=` directive to inject a malicious shared library (`LD_PRELOAD`) into a clean, legitimate system daemon (`/usr/sbin/sshd`). When `systemd` starts the unit, the dynamic linker maps the hidden library into the daemon's address space, enabling function hooking (e.g., authentication bypass) while keeping `ExecStart=` completely benign.
 
