@@ -13,7 +13,7 @@ This document presents targeted Proof of Concept (PoC) test scenarios designed t
   * [PoC 1.1: Udev Macro Substitution Evasion & Process Tree Detachment](#poc-11-udev-macro-substitution-evasion--process-tree-detachment)
   * [PoC 1.2: Udev Process Tree Detachment & Inline Python Reverse Shell](#poc-12-udev-process-tree-detachment--inline-python-reverse-shell)
 * [2. Systemd Services](#2-systemd-services)
-  - [PoC 2.1: Systemd LD_PRELOAD Injection into Legitimate Service](#poc-21-systemd-ld_preload-injection-into-legitimate-service)
+  - [PoC 2.1: Systemd Environment Injection](#poc-21-systemd-environment-injection)
 * [3. Cron Jobs](#3-cron-jobs)
   * [PoC 3.1: Cron String Reversal](#poc-31-cron-string-reversal)
 * [4. PAM Authentication](#4-pam-authentication)
