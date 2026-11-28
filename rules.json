@@ -25,7 +25,7 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "\\bsocat\\s+exec:",
+    "indicator": "\\bsocat\\s+(exec|EXEC):",
     "description": "Socat execution relay attempt (Reverse shell or port forwarding)",
     "severity": "CRITICAL"
   },
@@ -40,7 +40,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "\\bcurl\\s+.*(-o|-O)\\s+(/tmp/|/dev/shm/|/var/tmp/)",
+    "indicator": "\\bcurl\\s+.*(-o|-O)\\s+(/tmp|/dev/shm|/var/tmp|/run/user(/[0-9]+)?)/",
     "description": "Downloading file via curl directly to a writable temporary directory",
     "severity": "HIGH"
   },
@@ -100,7 +100,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "nohup\\s+((/tmp|/dev/shm)/|nc|bash\\s+-i|curl|wget)",
+    "indicator": "nohup\\s+((/tmp|/dev/shm|/var/tmp|/run/user(/[0-9]+)?)/|nc|bash\\s+-i|curl|wget)",
     "description": "Process detachment from terminal session executing suspicious tools or paths",
     "severity": "HIGH"
   },
@@ -125,9 +125,14 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "(xxd\\s+-r|hexdump|\\bod\\s+-)",
-    "description": "Hexadecimal or binary dumping utility used to reconstruct obfuscated payloads.",
+    "indicator": "\\bxxd\\s+-r",
+    "description": "Hexadecimal reverse dump utility used to reconstruct obfuscated binary or shell payloads.",
     "severity": "HIGH"
+  },
+  {
+    "indicator": "(hexdump|\\bod\\s+-)",
+    "description": "Binary or octal dumping utility referenced in persistence artifact.",
+    "severity": "MEDIUM"
   },
   {
     "indicator": "\\brev\\s*\\|\\s*(ba|z|k|da)?sh",
@@ -140,7 +145,7 @@
     "severity": "CRITICAL"
   },
   {
-    "indicator": "(/tmp|/dev/shm|/var/tmp|/run/user)/\\.[a-zA-Z0-9_-]+",
+    "indicator": "(/tmp|/dev/shm|/var/tmp|/run/user(/[0-9]+)?)/\\.[a-zA-Z0-9_-]+",
     "description": "Direct execution of hidden script or binary from non-standard temporary directories.",
     "severity": "HIGH"
   },
