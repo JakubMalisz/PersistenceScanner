@@ -144,7 +144,7 @@ dpkg -V libpam-modules 2>/dev/null || rpm -Va pam
 
 ## 4. Scheduled Tasks, D-Bus & Daemon Sandboxing
 
-*Mitigates: Unauthorized `@reboot` tasks, `| at` job queuing, Systemd unit hijacking, D-Bus systemd triggers (`dbus-send`, `busctl` -> `org.freedesktop.systemd1`), and `/etc/update-motd.d/` backdoors.*
+*Mitigates: Unauthorized `@reboot` tasks, `| at` job queuing, Systemd unit hijacking, D-Bus systemd triggers (`dbus-send`, `busctl` -> `org.freedesktop.systemd1`) and `/etc/update-motd.d/` backdoors.*
 
 ### Restrict Access to `cron` and `at`
 Use allowlists so only explicitly authorized accounts can schedule background jobs, or disable `atd` entirely:
