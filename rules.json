@@ -145,7 +145,7 @@
     "severity": "HIGH"
   },
   {
-    "indicator": "eval\\s+['\"]?(\\$env|%E)\\{",
+    "indicator": "eval\\s+(\\$env|%E)\\{",
     "description": "Udev macro substitution evasion attempt detected in extracted payload",
     "severity": "MEDIUM"
   },
