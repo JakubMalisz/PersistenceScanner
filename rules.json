@@ -36,7 +36,7 @@
   },
   {
     "indicator": "\\bcurl\\s+.*-(k|-insecure)",
-    "description": "HTTP request via curl with SSL/TLS verification disabled (Potential malicious download)",
+    "description": "HTTPS request via curl with SSL/TLS verification disabled (Potential malicious download)",
     "severity": "HIGH"
   },
   {
